@@ -3,7 +3,7 @@ import { ApiError } from "../utils/apiError.js"
 
 export const errorHandler = (err,req,res,next) =>{
     // Custom Errors
-    console.log(err)
+    console.log(err);
     if (err.statusCode) {
         return res.status(err.statusCode).json({
             success: false,
@@ -33,5 +33,4 @@ export const errorHandler = (err,req,res,next) =>{
             errors
         });
     }
-    res.send("hello")
 } 

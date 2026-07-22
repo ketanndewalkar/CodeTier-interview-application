@@ -8,7 +8,9 @@ import { mongoDBConnect } from "./src/db/db.js";
 import { authRoutes } from "./src/routes/auth.route.js";
 import { setupWebSocket } from "./src/utils/ws.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
-
+import fs from "node:fs/promises";
+import { Job } from "./src/models/job.model.js";
+import { jobRoutes } from "./src/routes/job.route.js";
 const app = express();
 
 // express middleware
@@ -23,12 +25,9 @@ app.use(
 );
 
 // Routes
-app.get("/",(req,res)=>res.send("health"));
-app.use("/api/v1/auth",authRoutes);
-
-
-
-
+app.get("/", (req, res) => res.send("health"));
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/job",jobRoutes);
 // PORT intialization
 const PORT = process.env.PORT || 8080;
 
@@ -39,7 +38,7 @@ export const server = createServer(app);
 await setupWebSocket(server)
   .then(async () => {
     await mongoDBConnect()
-      .then(() => {
+      .then(async () => {
         server.listen(PORT, () => {
           console.log("MONGODB CONNECTED ✅");
           console.log(`Listening on http://localhost:${PORT}`);
@@ -50,4 +49,6 @@ await setupWebSocket(server)
   })
   .catch((err) => console.log(err.message));
 
-  app.use(errorHandler);
+app.use(errorHandler);
+
+

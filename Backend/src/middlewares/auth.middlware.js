@@ -4,17 +4,21 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/apiError.js";
 
 export const authMiddleware = asyncHandler(async (req, res, next) => {
-  const { accessToken } = req.body;
-  if (!accessToken) {
-    throw new ApiError(401, "Token Not Found");
+  let token;
+  try {
+    const { accessToken } = req.body;
+    token = accessToken;
+  } catch (error) {
+    throw new ApiError(403,"No Token Found")
   }
-  console.log(process.env.JWT_TOKEN_SECRET);
+  if(!token){
+    throw new ApiError(403,"No Token Found outside")
+  }
   let payload;
   try {
-    payload = jwt.verify(accessToken, process.env.JWT_TOKEN_SECRET);
+    payload = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
   } catch (error) {
-      throw new ApiError(401, "Session Expired");
-    
+    throw new ApiError(401, "Session Expired");
   }
 
   const user = await User.findById(payload._id);
@@ -22,3 +26,11 @@ export const authMiddleware = asyncHandler(async (req, res, next) => {
 
   next();
 });
+
+export const isAllowed = (...roles) =>
+  asyncHandler(async (req, res, next) => {
+    if (roles.includes(req.user.role)) {
+      return next();
+    }
+    throw new ApiError(403, "UnAuthorized to access this feature.hello");
+  });

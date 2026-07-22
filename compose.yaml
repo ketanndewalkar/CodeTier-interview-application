@@ -13,3 +13,13 @@ services:
 
     volumes:
       - ./mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+     ME_CONFIG_BASICAUTH_USERNAME: admin
+     ME_CONFIG_BASICAUTH_PASSWORD: qwerty
+     ME_CONFIG_MONGODB_URL: mongodb://admin:qwerty@mongo:27017
