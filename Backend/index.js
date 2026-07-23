@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
+
 import express from "express";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
@@ -11,6 +11,7 @@ import { errorHandler } from "./src/middlewares/error.middleware.js";
 import fs from "node:fs/promises";
 import { Job } from "./src/models/job.model.js";
 import { jobRoutes } from "./src/routes/job.route.js";
+import { ApplicationRoutes } from "./src/routes/application.route.js";
 const app = express();
 
 // express middleware
@@ -28,6 +29,8 @@ app.use(
 app.get("/", (req, res) => res.send("health"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/job",jobRoutes);
+app.use("/api/v1/application",ApplicationRoutes)
+
 // PORT intialization
 const PORT = process.env.PORT || 8080;
 
