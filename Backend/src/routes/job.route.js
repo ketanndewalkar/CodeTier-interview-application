@@ -1,5 +1,5 @@
 import express from "express"
-import { authMiddleware, isAllowed } from "../middlewares/auth.middlware.js";
+import { authMiddleware, isAllowed } from "../middlewares/auth.middleware.js";
 import { changeStatusOfJobOpening, createJobOpening, deleteJobOpening, getAllJobsOpenings, getJobByID, updateJobOpening } from "../controllers/job.controller.js";
 
 const router = express.Router();
