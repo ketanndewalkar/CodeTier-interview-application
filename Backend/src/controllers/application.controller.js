@@ -5,6 +5,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadResumeToCloudinary } from "../utils/uploadToCloudinary.js";
+import { CandidateAvailability } from "../models/candidateavailability.model.js";
 
 export const getAllApplication = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -37,7 +38,9 @@ export const getApplicationById = asyncHandler(async (req, res) => {
     _id: id,
   });
 
-  return res.status(200).json(new ApiResponse(200, "Application Fetched.",application));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Application Fetched.", application));
 });
 
 export const createApplication = asyncHandler(async (req, res) => {
@@ -66,9 +69,7 @@ export const createApplication = asyncHandler(async (req, res) => {
   const newApplication = await Application.create({
     candidateId: req.user._id.toString(),
     coverLetter,
-    portfolioLinks: [
-      { platform: "LEETCODE", url: "https://leetcode.com/u/ketandewalkar" },
-    ],
+    portfolioLinks,
     yearsOfExperience,
     expectedSalary,
     noticePeriod,
@@ -90,7 +91,7 @@ export const createApplication = asyncHandler(async (req, res) => {
 export const updateApplicationStatus = asyncHandler(async (req, res) => {
   const { id: applicationId } = req.params;
   const { status } = req.query;
-  console.log(applicationId, "    " , status)
+  console.log(applicationId, "    ", status);
   if (!applicationId) {
     throw new ApiError(401, "applicationId is required.");
   }
@@ -110,7 +111,25 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
   }
   existApplication.applicationStatus = status;
   await existApplication.save();
-
+  // If the organization is shortlisting the application
+  if (existApplication.applicationStatus === "SHORTLISTED") {
+    await CandidateAvailability.findOneAndUpdate(
+      {
+        applicationId: existApplication._id,
+      },
+      {
+        applicationId: existApplication._id,
+        candidateId: existApplication.candidateId,
+        timezone: "Asia/Kolkata",
+        slots: [],
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      },
+    );
+  }
   return res
     .status(200)
     .json(new ApiResponse(200, "Application Updated.", existApplication));

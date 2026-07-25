@@ -150,3 +150,108 @@ export const getMe = asyncHandler(async(req,res)=>{
   user.refreshToken = null;
   res.status(200).json(new ApiResponse(200,"Profile Fetched Successfully",user));
 })
+
+export const updateProfile = asyncHandler(async (req, res) => {
+    const allowedUpdates = [
+        "name",
+        "username",
+        "email",
+        "password",
+        "timezone",
+        "skills",
+        "experience",
+        "availability",
+    ];
+
+    const updates = req.body;
+
+    if (!updates || Object.keys(updates).length === 0) {
+        throw new ApiError(400, "No update data provided.");
+    }
+
+    const invalidFields = Object.keys(updates).filter(
+        (field) => !allowedUpdates.includes(field)
+    );
+
+    if (invalidFields.length > 0) {
+        throw new ApiError(400, `Invalid update fields: ${invalidFields.join(", ")}`);
+    }
+
+    if (updates.username !== undefined) {
+        if (typeof updates.username !== "string" || updates.username.trim().length < 3) {
+            throw new ApiError(400, "Username must be at least 3 characters long.");
+        }
+
+        const existingUser = await User.findOne({
+            username: updates.username.trim(),
+            _id: { $ne: req.user._id },
+        });
+
+        if (existingUser) {
+            throw new ApiError(409, "Username is already taken.");
+        }
+
+        req.user.username = updates.username.trim();
+    }
+
+    if (updates.email !== undefined) {
+        if (typeof updates.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updates.email)) {
+            throw new ApiError(400, "Please provide a valid email address.");
+        }
+
+        const existingUser = await User.findOne({
+            email: updates.email.toLowerCase(),
+            _id: { $ne: req.user._id },
+        });
+
+        if (existingUser) {
+            throw new ApiError(409, "Email is already registered.");
+        }
+
+        req.user.email = updates.email.toLowerCase();
+    }
+
+    if (updates.password !== undefined) {
+        if (typeof updates.password !== "string" || updates.password.trim().length < 6) {
+            throw new ApiError(400, "Password must be at least 6 characters long.");
+        }
+        req.user.password = updates.password;
+    }
+
+    if (updates.name !== undefined) {
+        req.user.name = updates.name;
+    }
+
+    if (updates.timezone !== undefined) {
+        req.user.timezone = updates.timezone;
+    }
+
+    if (updates.skills !== undefined) {
+        if (!Array.isArray(updates.skills)) {
+            throw new ApiError(400, "Skills must be an array.");
+        }
+        req.user.skills = updates.skills;
+    }
+
+    if (updates.experience !== undefined) {
+        if (typeof updates.experience !== "number" || updates.experience < 0) {
+            throw new ApiError(400, "Experience must be a non-negative number.");
+        }
+        req.user.experience = updates.experience;
+    }
+
+    if (updates.availability !== undefined) {
+        if (!Array.isArray(updates.availability)) {
+            throw new ApiError(400, "Availability must be an array.");
+        }
+        req.user.availability = updates.availability;
+    }
+
+    await req.user.save();
+
+    const updatedUser = await User.findById(req.user._id).select("-password -refreshToken");
+
+    return res.status(200).json(
+        new ApiResponse(200, "Profile updated successfully.", updatedUser)
+    );
+});
