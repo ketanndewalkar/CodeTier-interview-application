@@ -33,6 +33,7 @@ const jobOpeningSchema = new Schema(
       enum: ["FRESHER", "JUNIOR", "MID_LEVEL", "SENIOR", "LEAD", "PRINCIPAL"],
       required: true,
     },
+
     applicationStartDate: {
       type: Date,
       required: true,
@@ -42,6 +43,23 @@ const jobOpeningSchema = new Schema(
       type: Date,
       required: true,
     },
+
+    // Interview Configuration
+    interviewConfig: {
+      duration: {
+        type: Number,
+        required: true,
+        min: 15,
+        default: 60, // minutes
+      },
+
+      bufferTime: {
+        type: Number,
+        default: 15, // minutes between interviews
+        min: 0,
+      },
+    },
+
     status: {
       type: String,
       enum: ["DRAFT", "OPEN", "PAUSED", "CLOSED", "ARCHIVED"],
@@ -51,7 +69,7 @@ const jobOpeningSchema = new Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export const Job = mongoose.model("JobOpening", jobOpeningSchema);

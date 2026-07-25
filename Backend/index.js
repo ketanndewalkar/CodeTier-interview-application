@@ -12,6 +12,10 @@ import fs from "node:fs/promises";
 import { Job } from "./src/models/job.model.js";
 import { jobRoutes } from "./src/routes/job.route.js";
 import { ApplicationRoutes } from "./src/routes/application.route.js";
+import { AvailabilityRoutes } from "./src/routes/availability.route.js";
+import { slotRoutes } from "./src/routes/slot.routes.js";
+import { ApiResponse } from "./src/utils/apiResponse.js";
+import schedulingService from "./src/services/schedulingService.js";
 const app = express();
 
 // express middleware
@@ -26,10 +30,15 @@ app.use(
 );
 
 // Routes
-app.get("/", (req, res) => res.send("health"));
+app.get("/", async (req, res) => {
+  const result = await schedulingService.scheduleInterview("6a64af12ac5d7b5086b03081");
+  return res.status(200).json(new ApiResponse(200,"scheduled interviwed",result))
+});
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/job",jobRoutes);
 app.use("/api/v1/application",ApplicationRoutes)
+app.use("/api/v1/availability",AvailabilityRoutes)
+app.use("/api/v1/slot",slotRoutes)
 
 // PORT intialization
 const PORT = process.env.PORT || 8080;
