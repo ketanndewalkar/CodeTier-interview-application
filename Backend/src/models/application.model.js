@@ -101,6 +101,20 @@ const jobApplicationSchema = new Schema(
       required: true,
     },
 
+    schedulingStatus: {
+      type: String,
+      enum: [
+        "NOT_REQUIRED",
+        "WAITING_FOR_AVAILABILITY",
+        "AVAILABILITY_SUBMITTED",
+        "SCHEDULING",
+        "SCHEDULED_FAILED",
+        "INTERVIEW_SCHEDULED"
+      ],
+      default: "NOT_REQUIRED",
+      required: true,
+    },
+
     interviewId: {
       type: Schema.Types.ObjectId,
       ref: "Interview",
@@ -131,6 +145,7 @@ jobApplicationSchema.index({
   organizationId: 1,
   jobOpeningId: 1,
   applicationStatus: 1,
+  schedulingStatus: 1,
 });
 
 export const Application = mongoose.model(

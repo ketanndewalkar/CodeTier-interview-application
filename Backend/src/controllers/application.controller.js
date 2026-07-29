@@ -110,9 +110,10 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
     throw new ApiError(403, "UnAuthorized.");
   }
   existApplication.applicationStatus = status;
-  await existApplication.save();
+  // await existApplication.save();
   // If the organization is shortlisting the application
   if (existApplication.applicationStatus === "SHORTLISTED") {
+    existApplication.schedulingStatus="WAITING_FOR_AVAILABILITY";
     await CandidateAvailability.findOneAndUpdate(
       {
         applicationId: existApplication._id,

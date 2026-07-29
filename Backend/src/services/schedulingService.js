@@ -1,4 +1,4 @@
-import { Application as JobApplication } from '../models/application.model.js';
+import { Application, Application as JobApplication } from '../models/application.model.js';
 import { Job as JobOpening } from '../models/job.model.js';
 import { CandidateAvailability } from '../models/candidateavailability.model.js';
 
@@ -12,6 +12,7 @@ import interviewCreationService, { InterviewCreationService, SlotConflictError, 
 import notificationService from './notificationService.js';
 import { addDays } from '../utils/intervalUtils.js';
 import config from '../config/scheduling.config.js';
+import { interviewQueue } from '../utils/queue.js';
 
 class SchedulingService {
   /**
@@ -26,7 +27,7 @@ class SchedulingService {
     if (!application) {
       return this._fail(applicationId, 'Application not found');
     }
-
+    application.schedulingStatus="SCHEDULING";
     const [jobOpening, candidateAvailability] = await Promise.all([
       JobOpening.findById(application.jobOpeningId).lean(),
       CandidateAvailability.findOne({ applicationId }).lean(),
@@ -179,6 +180,7 @@ class SchedulingService {
     const validScored = scored.filter(Boolean);
 
     if (validScored.length === 0) {
+      
       return { status: 'NO_FEASIBLE_INTERVIEWER', reason: 'No interviewer has a slot overlapping candidate availability' };
     }
 
@@ -197,6 +199,7 @@ class SchedulingService {
           organizationId,
           slot: candidate.bestSlot,
           duration,
+          jobOpeningId:application.jobOpeningId,
           bufferMinutes,
           scoringSnapshot: {
             totalScore: candidate.totalScore,
@@ -209,7 +212,19 @@ class SchedulingService {
         });
 
         await notificationService.notifyInterviewScheduled(interview);
+        const application = await Application.findByIdAndUpdate(application._id,{
+          schedulingStatus:"INTERVIEW_SCHEDULED",
+        })
+        const startDate = new Date(interview.startTime);
 
+        // 10 minutes before interview
+        const reminderTime = startDate.getTime() - (10 * 60 * 1000);
+        const delay = reminderTime - Date.now();
+        await interviewQueue.add("prepare-interview",{
+          interviewId:interview._id
+        },{
+          delay,
+        })
         return { status: 'SCHEDULED', interview, rankedCandidates: ranked };
       } catch (err) {
         if (err instanceof SlotConflictError || err instanceof LockAcquisitionError) {
@@ -218,7 +233,6 @@ class SchedulingService {
         throw err;
       }
     }
-
     return {
       status: 'CONFLICT_RETRY_EXHAUSTED',
       reason: `Top ${fallbackPool.length} ranked interviewers all had a slot conflict at commit time`,

@@ -3,6 +3,7 @@ import { Application as JobApplication } from '../models/application.model.js';
 import { padInterval } from '../utils/intervalUtils.js';
 import { withLock, LockAcquisitionError } from '../utils/lock.js';
 import config from '../config/scheduling.config.js';
+import { Job } from '../models/job.model.js';
 
 class SlotConflictError extends Error {}
 
@@ -40,6 +41,7 @@ class InterviewCreationService {
     candidateId,
     interviewerId,
     organizationId,
+    jobOpeningId,
     slot,
     duration,
     bufferMinutes,
@@ -59,7 +61,7 @@ class InterviewCreationService {
           `Slot ${slot.start.toISOString()} - ${slot.end.toISOString()} for interviewer ${interviewerId} was taken concurrently`
         );
       }
-
+      const job = await Job.findById(jobOpeningId);
       const createdInterview = await Interview.create({
         applicationId,
         candidateId,
@@ -70,6 +72,7 @@ class InterviewCreationService {
         duration,
         status: 'SCHEDULED',
         scoringSnapshot,
+        environmentId:job.environmentId
       });
 
       // NOTE: JobApplication.applicationStatus enum (APPLIED / SHORTLISTED /
