@@ -20,6 +20,11 @@ const InterviewSchema = new Schema(
       enum: ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'RESCHEDULED'],
       default: 'SCHEDULED',
     },
+    environmentId: {
+        type: Schema.Types.ObjectId,
+        ref: "Environment",
+        required: true
+    },
     meetingRoom: { type: String },
     // Audit trail: why this interviewer/slot won, for debugging & admin UI.
     scoringSnapshot: {

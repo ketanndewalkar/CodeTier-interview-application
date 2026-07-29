@@ -23,3 +23,9 @@ services:
      ME_CONFIG_BASICAUTH_USERNAME: admin
      ME_CONFIG_BASICAUTH_PASSWORD: qwerty
      ME_CONFIG_MONGODB_URL: mongodb://admin:qwerty@mongo:27017
+  redis:
+    image:  redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    

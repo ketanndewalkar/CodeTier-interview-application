@@ -58,6 +58,11 @@ const jobOpeningSchema = new Schema(
         default: 15, // minutes between interviews
         min: 0,
       },
+      environmentId: {
+            type: Schema.Types.ObjectId,
+            ref: "Environment",
+            required: true
+        },
     },
 
     status: {
