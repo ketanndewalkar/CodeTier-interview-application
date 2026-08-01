@@ -1,3 +1,4 @@
+import { tryCatch } from "bullmq";
 import { Application } from "../models/application.model.js";
 import { CandidateAvailability } from "../models/candidateavailability.model.js";
 import schedulingService from "../services/schedulingService.js";
@@ -55,11 +56,15 @@ export const submitAvailability = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(new ApiResponse(200, "Availability submitted.", availability));
-
-  const result = await schedulingService.scheduleInterview(applicationId);
-  if (result.status == "SCHEDULED") {
-    application.schedulingStatus = "INTERVIEW_SCHEDULED";
-  } else {
+  try {
+    const result = await schedulingService.scheduleInterview(applicationId);
+    if (result.status == "SCHEDULED") {
+      application.schedulingStatus = "INTERVIEW_SCHEDULED";
+    } else{
+      application.schedulingStatus = "WAITING_FOR_AVAILABILITY";
+    }
+  } catch (error) {
+    console.log(error)
     application.schedulingStatus = "WAITING_FOR_AVAILABILITY";
   }
   await application.save();

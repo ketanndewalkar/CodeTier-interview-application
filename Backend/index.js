@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { mongoDBConnect } from "./src/db/db.js";
 import { authRoutes } from "./src/routes/auth.route.js";
-import { setupWebSocket } from "./src/utils/ws.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 import fs from "node:fs/promises";
 import { Job } from "./src/models/job.model.js";
@@ -17,6 +16,8 @@ import { slotRoutes } from "./src/routes/slot.routes.js";
 import { ApiResponse } from "./src/utils/apiResponse.js";
 import schedulingService from "./src/services/schedulingService.js";
 import { interviewQueue } from "./src/utils/queue.js";
+import { interviewRoutes } from "./src/routes/interview.routes.js";
+import { setupWebSocket } from "./src/websocket/index.js";
 const app = express();
 
 // express middleware
@@ -30,20 +31,13 @@ app.use(
   }),
 );
 
-// Routes
-app.get("/", async (req, res) => { 
-  await interviewQueue.add("prepare-interview",{
-    interviewId:"6a64cf9e4dcad005c7e4c0b3"
-  },{
-    delay:0
-  })
-  res.send("jobscheduled.")
-});
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/job",jobRoutes);
 app.use("/api/v1/application",ApplicationRoutes)
 app.use("/api/v1/availability",AvailabilityRoutes)
 app.use("/api/v1/slot",slotRoutes)
+app.use("/api/v1/interview",interviewRoutes)
 
 // PORT intialization
 const PORT = process.env.PORT || 8080;

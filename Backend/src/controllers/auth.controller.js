@@ -102,11 +102,9 @@ export const signUp = asyncHandler(async (req, res) => {
 
 export const refreshToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.cookies;
-  console.log(refreshToken)
   if (!refreshToken) {
     throw new ApiError(401, "RefreshToken Not Found");
   }
-  console.log(process.env.JWT_REFRESH_SECRET);
   const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET||"asndjandkjasj");
   if (!payload) {
     throw new ApiError(401,"Invalid refreshToken");

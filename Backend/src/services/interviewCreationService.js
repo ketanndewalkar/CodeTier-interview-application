@@ -62,6 +62,12 @@ class InterviewCreationService {
         );
       }
       const job = await Job.findById(jobOpeningId);
+      const environmentId = job?.interviewConfig?.environmentId ?? job?.environmentId;
+
+      if (!environmentId) {
+        throw new Error('Job opening is missing interview environmentId');
+      }
+
       const createdInterview = await Interview.create({
         applicationId,
         candidateId,
@@ -72,7 +78,7 @@ class InterviewCreationService {
         duration,
         status: 'SCHEDULED',
         scoringSnapshot,
-        environmentId:job.environmentId
+        environmentId,
       });
 
       // NOTE: JobApplication.applicationStatus enum (APPLIED / SHORTLISTED /

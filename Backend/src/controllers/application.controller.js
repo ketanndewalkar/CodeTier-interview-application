@@ -131,6 +131,7 @@ export const updateApplicationStatus = asyncHandler(async (req, res) => {
       },
     );
   }
+  await existApplication.save()
   return res
     .status(200)
     .json(new ApiResponse(200, "Application Updated.", existApplication));

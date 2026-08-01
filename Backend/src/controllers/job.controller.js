@@ -9,7 +9,9 @@ export const getAllJobsOpenings = asyncHandler(async (req, res) => {
     const jobs = await Job.find({
       organizationId,
     });
-    return res.status(200).json(new ApiResponse(200, "Job Successfully Fetched.", jobs));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Job Successfully Fetched.", jobs));
   }
 
   const jobs = await Job.find({
@@ -18,7 +20,9 @@ export const getAllJobsOpenings = asyncHandler(async (req, res) => {
     },
   });
 
-  return res.status(200).json(new ApiResponse(200, "Job Successfully fetched", jobs));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Job Successfully fetched", jobs));
 });
 
 export const createJobOpening = asyncHandler(async (req, res) => {
@@ -29,6 +33,9 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     experience,
     applicationStartDate,
     applicationDeadline,
+    interviewDuration,
+    bufferTime,
+    environmentId,
   } = req.body;
   if (
     !title ||
@@ -36,7 +43,10 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     !requiredSkills ||
     !experience ||
     !applicationStartDate ||
-    !applicationDeadline
+    !applicationDeadline ||
+    !interviewDuration ||
+    !bufferTime ||
+    !environmentId
   ) {
     throw new ApiError(401, "All Fields are required");
   }
@@ -48,8 +58,10 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     experience,
     applicationStartDate,
     applicationDeadline,
+    interviewDuration,
+    bufferTime,
+    environmentId,
   });
-  console.log(existJob,"hello");
   if (existJob) {
     throw new ApiError(401, "Job Already Exist");
   }
@@ -59,14 +71,23 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     description,
     requiredSkills,
     experience,
-    applicationStartDate,applicationDeadline,organizationId:req.user._id.toString()
+    applicationStartDate,
+    applicationDeadline,
+    organizationId: req.user._id.toString(),
+    interviewConfig: {
+      duration: interviewDuration,
+      bufferTime,
+      environmentId,
+    },
   });
 
   if (!newJob) {
     throw new ApiError(500, "Server Issue");
   }
 
-  return res.status(201).json(new ApiResponse(201, "Published Job Opening", newJob));
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "Published Job Opening", newJob));
 });
 
 export const getJobByID = asyncHandler(async (req, res) => {
@@ -78,11 +99,12 @@ export const getJobByID = asyncHandler(async (req, res) => {
   const job = await Job.findById(id);
   //   TODO:for candidate check if already applied for job and
   //        send a isApplied attribute in the job object send as response
+  console.log(job)
   if (!job) {
     throw new ApiError(401, "Job Opening dont Exist");
   }
 
-  return res.status(200).json(new ApiResponse(200, "Job Opening Fetched",job));
+  return res.status(200).json(new ApiResponse(200, "Job Opening Fetched", job));
 });
 
 export const updateJobOpening = asyncHandler(async (req, res) => {
@@ -94,6 +116,9 @@ export const updateJobOpening = asyncHandler(async (req, res) => {
     experience,
     applicationStartDate,
     applicationDeadline,
+    interviewDuration,
+    bufferTime,
+    environmentId,
   } = req.body;
 
   if (!id) {
@@ -117,6 +142,11 @@ export const updateJobOpening = asyncHandler(async (req, res) => {
       experience,
       applicationStartDate,
       applicationDeadline,
+      interviewConfig: {
+        duration: interviewDuration,
+        bufferTime,
+        environmentId,
+      },
     },
     { new: true },
   );
@@ -148,7 +178,7 @@ export const deleteJobOpening = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, "Deleted Job", deletedJob));
 });
 
-export const changeStatusOfJobOpening = asyncHandler(async (req,res) => {
+export const changeStatusOfJobOpening = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.query;
   if (!id) {

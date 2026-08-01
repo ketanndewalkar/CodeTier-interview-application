@@ -8,11 +8,8 @@ import {
 } from "../../models/environment.model.js";
 const PORT = process.env.PORT || 8080;
 export const setupInterviewEnvironment = async (interviewId) => {
-  console.log("hello", interviewId);
   const interview = await Interview.findById(interviewId);
-  console.log(interview);
   const environment = await Environment.findById(interview.environmentId);
-  console.log(environment)
 
   const interviewEnvironment = await InterviewEnvironment.create({
     interviewId,
@@ -27,8 +24,7 @@ export const setupInterviewEnvironment = async (interviewId) => {
     image: environment.dockerImage,
     name: environment.language,
     workspacePath,
-    environment
-
+    environment,
   });
   const containerInfo = await container.inspect();
 
@@ -39,11 +35,11 @@ export const setupInterviewEnvironment = async (interviewId) => {
   interviewEnvironment.containerId = container.id;
   interviewEnvironment.roomId = interviewId;
   interviewEnvironment.workspacePath = workspacePath;
-  interviewEnvironment.preview = interviewEnvironment.preview?{
+  interviewEnvironment.info = {
     containerPort: environment.previewPort,
     hostPort: port,
     url: environment.supportsPreview ? `http://localhost:${port}` : "",
-  }:{};
+  };
   interviewEnvironment.status = "RUNNING";
 
   await interviewEnvironment.save();

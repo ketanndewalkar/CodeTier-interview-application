@@ -25,7 +25,6 @@ const InterviewSchema = new Schema(
         ref: "Environment",
         required: true
     },
-    meetingRoom: { type: String },
     // Audit trail: why this interviewer/slot won, for debugging & admin UI.
     scoringSnapshot: {
       totalScore: { type: Number },
