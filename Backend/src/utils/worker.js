@@ -3,6 +3,7 @@ import { Worker } from "bullmq";
 import IORedis from "ioredis";
 import { setupInterviewEnvironment } from "../services/InterviewEnvironment/setupInterviewEnvironment.js";
 import { mongoDBConnect } from "../db/db.js";
+import { InterviewEnvironment } from "../models/environment.model.js";
 
 const connection = new IORedis({
   host: "127.0.0.1",
@@ -26,7 +27,13 @@ const worker = new Worker(
       const result = await setupInterviewEnvironment(job.data.interviewId);
       return result;
     } catch (err) {
-      console.error("Job handler error:", err);
+      const interviewEnvironment = await InterviewEnvironment.findOneAndUpdate({
+        interviewId
+      },{
+        status:"FAILED"
+      },{
+        new:true
+      })
       throw err;
     }
   },
@@ -40,7 +47,16 @@ worker.on("completed", (job) => {
 });
 
 worker.on("failed", (job, err) => {
-  console.error(`Job ${job?.id} failed:`, err);
+  if(job.attemptsMade === job.opts.attempts){
+        await InterviewEnvironment.findOneAndUpdate(
+          {
+            interviewId: job.data.interviewId
+          },
+          {
+            status:"FAILED"
+          }
+        )
+    }
 });
 
 const shutdown = async () => {

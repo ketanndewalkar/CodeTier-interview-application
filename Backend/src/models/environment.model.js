@@ -6,53 +6,42 @@ const environmentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
     language: {
       type: String,
       enum: ["REACT", "NODE", "JAVA", "CPP", "C", "PYTHON"],
       required: true,
     },
-
     dockerImage: {
       type: String,
       required: true,
     },
-
     workspaceTemplate: {
       type: String,
       required: true,
     },
-
     supportsPreview: {
       type: Boolean,
       default: false,
     },
-
     previewPort: {
       type: Number,
       default: null,
     },
-
     compileCommand: [String],
-
     runCommand: [String],
-
     containerStartCommand: [String],
     cpuLimit: {
       type: String,
       default: "1",
     },
-
     memoryLimit: {
       type: String,
       default: "512m",
     },
-
     timeoutSeconds: {
       type: Number,
       default: 300,
     },
-
     isActive: {
       type: Boolean,
       default: true,
@@ -71,16 +60,13 @@ const interviewEnvironmentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
     environmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Environment",
       required: true,
     },
-
     status: {
       type: String,
-
       enum: [
         "PROVISIONING",
         "READY",
@@ -89,28 +75,18 @@ const interviewEnvironmentSchema = new mongoose.Schema(
         "FAILED",
         "DESTROYED",
       ],
-
       default: "PROVISIONING",
     },
-
     containerId: String,
-
     roomId: String,
-
     workspacePath: String,
-
-    preview: {
+    info: {
       host: String,
-
       hostPort: Number,
-
       containerPort: Number,
-
       url: String,
     },
-
     startedAt: Date,
-
     destroyedAt: Date,
   },
   {
