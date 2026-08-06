@@ -55,7 +55,6 @@ export const login = asyncHandler(async (req, res) => {
 });
 export const signUp = asyncHandler(async (req, res) => {
     
-  console.log("hello") ;
   const { username, name, email, password, role } = req.body;
 
     // Validate input

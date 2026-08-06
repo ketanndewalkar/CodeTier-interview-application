@@ -1,1 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────
+   Custom Scrollbar  —  matches the dark-purple app theme
+   Works in: Chrome, Edge, Safari (webkit), Firefox (scrollbar-*)
+   ───────────────────────────────────────────────────────────────── */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
+}
+
+/* Webkit (Chrome / Edge / Safari) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.30);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.60);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Utility: .scrollbar-thin  (for local containers: modal, slot list, etc.) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(109, 40, 217, 0.25);
+  border-radius: 999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.55);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(109, 40, 217, 0.25) transparent;
+}
+
+/* ── Utility: .scrollbar-none  (completely hide scrollbar) */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ── Hero Main Title font-family custom styling ── */
+.hero-main-title,
+.hero-main-title .proximity-char {
+  font-family: 'Playfair Display', Georgia, Cambria, "Times New Roman", Times, serif !important;
+}
+
+.proximity-char {
+  transition: font-weight 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: font-weight, transform;
+}

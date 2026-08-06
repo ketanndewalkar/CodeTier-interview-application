@@ -60,7 +60,7 @@ export const submitAvailability = asyncHandler(async (req, res) => {
     const result = await schedulingService.scheduleInterview(applicationId);
     if (result.status == "SCHEDULED") {
       application.schedulingStatus = "INTERVIEW_SCHEDULED";
-    } else{
+    } else {
       application.schedulingStatus = "WAITING_FOR_AVAILABILITY";
     }
   } catch (error) {

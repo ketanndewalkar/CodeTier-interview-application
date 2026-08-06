@@ -4,14 +4,16 @@ export const useUserStore = create(
   persist(
     (set) => ({
       user: null,
+      accessToken: null,
       roleRoute:{
-        "candidate":"/dashboard",
-        "interviewer":"/interviewer/dashboard",
-        "organization":"/company/dashboard",
+        "CANDIDATE":"/dashboard",
+        "INTERVIEWER":"/interviewer/dashboard",
+        "ORGANIZATION":"/organization/dashboard",
       },
       flag:"true",
-      setUser: (user) => set({ user: user }),
-      logout: () => set({ user: null }),
+      setUser: (user) => set({ user }),
+      setAccessToken: (token) => set({ accessToken: token }),
+      logout: () => set({ user: null, accessToken: null }),
     }),
     {
       name: "auth-store",

@@ -1,4 +1,5 @@
 import { Job } from "../models/job.model.js";
+import { Application } from "../models/application.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -20,9 +21,22 @@ export const getAllJobsOpenings = asyncHandler(async (req, res) => {
     },
   });
 
+  // Check which jobs the candidate has applied for
+  let appliedJobIds = new Set();
+  if (req.user && req.user.role === "CANDIDATE") {
+    const applications = await Application.find({ candidateId: req.user._id });
+    appliedJobIds = new Set(applications.map(app => app.jobOpeningId.toString()));
+  }
+
+  const jobsWithApplied = jobs.map(job => {
+    const jobObj = job.toObject();
+    jobObj.isApplied = appliedJobIds.has(job._id.toString());
+    return jobObj;
+  });
+
   return res
     .status(200)
-    .json(new ApiResponse(200, "Job Successfully fetched", jobs));
+    .json(new ApiResponse(200, "Job Successfully fetched", jobsWithApplied));
 });
 
 export const createJobOpening = asyncHandler(async (req, res) => {
@@ -36,7 +50,12 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     interviewDuration,
     bufferTime,
     environmentId,
+    interviewMode,
+    availabilityType,
+    compensation,
+    status,
   } = req.body;
+
   if (
     !title ||
     !description ||
@@ -46,7 +65,9 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     !applicationDeadline ||
     !interviewDuration ||
     !bufferTime ||
-    !environmentId
+    !environmentId ||
+    !interviewMode ||
+    !availabilityType
   ) {
     throw new ApiError(401, "All Fields are required");
   }
@@ -54,13 +75,7 @@ export const createJobOpening = asyncHandler(async (req, res) => {
   const existJob = await Job.findOne({
     title,
     description,
-    requiredSkills,
-    experience,
-    applicationStartDate,
-    applicationDeadline,
-    interviewDuration,
-    bufferTime,
-    environmentId,
+    organizationId: req.user._id.toString(),
   });
   if (existJob) {
     throw new ApiError(401, "Job Already Exist");
@@ -79,6 +94,10 @@ export const createJobOpening = asyncHandler(async (req, res) => {
       bufferTime,
       environmentId,
     },
+    interviewMode,
+    availabilityType,
+    status: status || "DRAFT",
+    ...(compensation && { compensation }),
   });
 
   if (!newJob) {
@@ -97,14 +116,22 @@ export const getJobByID = asyncHandler(async (req, res) => {
   }
 
   const job = await Job.findById(id);
-  //   TODO:for candidate check if already applied for job and
-  //        send a isApplied attribute in the job object send as response
-  console.log(job)
   if (!job) {
     throw new ApiError(401, "Job Opening dont Exist");
   }
 
-  return res.status(200).json(new ApiResponse(200, "Job Opening Fetched", job));
+  const jobObj = job.toObject();
+  let isApplied = false;
+  if (req.user && req.user.role === "CANDIDATE") {
+    const existApplication = await Application.findOne({
+      candidateId: req.user._id,
+      jobOpeningId: id,
+    });
+    isApplied = !!existApplication;
+  }
+  jobObj.isApplied = isApplied;
+
+  return res.status(200).json(new ApiResponse(200, "Job Opening Fetched", jobObj));
 });
 
 export const updateJobOpening = asyncHandler(async (req, res) => {
@@ -119,6 +146,10 @@ export const updateJobOpening = asyncHandler(async (req, res) => {
     interviewDuration,
     bufferTime,
     environmentId,
+    interviewMode,
+    availabilityType,
+    compensation,
+    status,
   } = req.body;
 
   if (!id) {
@@ -126,11 +157,12 @@ export const updateJobOpening = asyncHandler(async (req, res) => {
   }
   const existJob = await Job.findById(id);
 
-  if (existJob.organizationId.toString() != req.user._id.toString()) {
-    throw new ApiError(401, "UnAuthorized");
-  }
   if (!existJob) {
     throw new ApiError(401, "No Job Opening Exist");
+  }
+
+  if (existJob.organizationId.toString() != req.user._id.toString()) {
+    throw new ApiError(401, "UnAuthorized");
   }
 
   const updatedJob = await Job.findByIdAndUpdate(
@@ -147,6 +179,10 @@ export const updateJobOpening = asyncHandler(async (req, res) => {
         bufferTime,
         environmentId,
       },
+      ...(interviewMode && { interviewMode }),
+      ...(availabilityType && { availabilityType }),
+      ...(compensation && { compensation }),
+      ...(status && { status }),
     },
     { new: true },
   );
