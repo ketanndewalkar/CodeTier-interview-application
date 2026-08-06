@@ -17,7 +17,9 @@ import { ApiResponse } from "./src/utils/apiResponse.js";
 import schedulingService from "./src/services/schedulingService.js";
 import { interviewQueue } from "./src/utils/queue.js";
 import { interviewRoutes } from "./src/routes/interview.routes.js";
+import { dashboardRoutes } from "./src/routes/dashboard.route.js";
 import { setupWebSocket } from "./src/websocket/index.js";
+import { environmentRoutes } from "./src/routes/environment.route.js";
 const app = express();
 
 // express middleware
@@ -26,24 +28,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   }),
 );
 
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/job",jobRoutes);
-app.use("/api/v1/application",ApplicationRoutes)
-app.use("/api/v1/availability",AvailabilityRoutes)
-app.use("/api/v1/slot",slotRoutes)
-app.use("/api/v1/interview",interviewRoutes)
+app.use("/api/v1/job", jobRoutes);
+app.use("/api/v1/application", ApplicationRoutes)
+app.use("/api/v1/availability", AvailabilityRoutes)
+app.use("/api/v1/slot", slotRoutes)
+app.use("/api/v1/interview", interviewRoutes)
+app.use("/api/v1/dashboard", dashboardRoutes)
+app.use("/api/v1/environment", environmentRoutes)
 
 // PORT intialization
 const PORT = process.env.PORT || 8080;
 
 // http server creation
-export const server = createServer(app); 
+export const server = createServer(app);
 
 // setup Web Socket
 await setupWebSocket(server)

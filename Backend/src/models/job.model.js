@@ -4,7 +4,7 @@ const jobOpeningSchema = new Schema(
   {
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: "user",
       required: true,
       index: true,
     },
@@ -63,6 +63,46 @@ const jobOpeningSchema = new Schema(
             ref: "Environment",
             required: true
         },
+    },
+
+    // Interview Mode
+    interviewMode: {
+      type: String,
+      enum: ["ONLINE", "OFFLINE", "HYBRID"],
+      required: true,
+      default: "ONLINE",
+    },
+
+    // Availability / Employment Type
+    availabilityType: {
+      type: String,
+      enum: ["FULL_TIME", "PART_TIME", "INTERNSHIP", "CONTRACT", "FREELANCE"],
+      required: true,
+      default: "FULL_TIME",
+    },
+
+    // Compensation (Salary / Stipend)
+    compensation: {
+      amount: {
+        type: Number,
+        min: 0,
+        default: null,
+      },
+      type: {
+        type: String,
+        enum: ["SALARY", "STIPEND"],
+        default: "SALARY",
+      },
+      currency: {
+        type: String,
+        enum: ["INR", "USD", "EUR", "GBP"],
+        default: "INR",
+      },
+      period: {
+        type: String,
+        enum: ["MONTHLY", "ANNUALLY", "LUMP_SUM"],
+        default: "MONTHLY",
+      },
     },
 
     status: {

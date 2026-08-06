@@ -9,9 +9,9 @@ const { Schema } = mongoose;
 const InterviewSchema = new Schema(
   {
     applicationId: { type: Schema.Types.ObjectId, ref: 'JobApplication', required: true, unique: true },
-    candidateId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    interviewerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    organizationId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    candidateId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
+    interviewerId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
+    organizationId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     duration: { type: Number, required: true }, // minutes, snapshot from JobOpening
@@ -21,9 +21,9 @@ const InterviewSchema = new Schema(
       default: 'SCHEDULED',
     },
     environmentId: {
-        type: Schema.Types.ObjectId,
-        ref: "Environment",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "Environment",
+      required: true
     },
     // Audit trail: why this interviewer/slot won, for debugging & admin UI.
     scoringSnapshot: {

@@ -4,13 +4,13 @@ const jobApplicationSchema = new Schema(
   {
     candidateId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "user",
       required: true,
     },
 
     organizationId: {
       type: Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: "user",
       required: true,
       index: true,
     },
