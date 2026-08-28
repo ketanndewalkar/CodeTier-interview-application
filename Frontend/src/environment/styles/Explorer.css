@@ -1,0 +1,137 @@
+/* VS Code File Explorer Theme */
+.vscode-explorer {
+  background-color: #181824; /* Dark sidebar background matching VS Code */
+  color: #cccccc;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.vscode-explorer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px 0 16px;
+  height: 48px;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: bold;
+  color: #bbbbbb;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.vscode-explorer-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.vscode-explorer-actions button {
+  background: none;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.vscode-explorer-actions button:hover {
+  color: #cccccc;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.vscode-tree-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-top: 4px;
+}
+
+.vscode-tree-item-row {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  position: relative;
+  cursor: pointer;
+  color: #cccccc;
+  transition: background-color 0.1s, color 0.1s;
+  box-sizing: border-box;
+  padding-right: 12px;
+}
+
+.vscode-tree-item-row:hover {
+  background-color: #2a2d2e;
+}
+
+.vscode-tree-item-row.is-selected {
+  background-color: #37373d;
+  color: #ffffff;
+}
+
+.vscode-tree-item-row.is-focused {
+  outline: 1px solid #007fd4;
+  outline-offset: -1px;
+}
+
+.vscode-tree-item-chevron {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 4px 0 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  color: #c5c5c5;
+  flex-shrink: 0;
+}
+
+.vscode-tree-item-chevron:hover {
+  color: #ffffff;
+}
+
+.vscode-tree-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.vscode-tree-item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+/* Nesting guide lines */
+.vscode-tree-item-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Reset default list padding and margins */
+.vscode-tree-container ul,
+.rct-tree-items-container {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}

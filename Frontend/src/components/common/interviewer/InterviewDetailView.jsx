@@ -27,8 +27,11 @@ import {
   Globe
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function InterviewDetailView({ interview, onBack }) {
+  console.log(interview.id)
+  const navigate = useNavigate()
   const [noteText, setNoteText] = useState('');
   const [copiedField, setCopiedField] = useState(null);
   const [showApplicationDetails, setShowApplicationDetails] = useState(true);
@@ -127,27 +130,11 @@ export default function InterviewDetailView({ interview, onBack }) {
         {/* Top Header Buttons */}
         <div className="flex items-center gap-2.5 flex-wrap">
           <button
-            onClick={() => toast.success(`Launching video call room for ${interview.id}...`)}
+            onClick={() => { toast.success(`Launching video call room for ${interview.id}...`); navigate(`/interview/${interview.id}`) }}
             className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#6C4F91] hover:bg-[#5b3f7f] text-white text-[11px] font-bold transition-all shadow-lg shadow-[#6C4F91]/20 cursor-pointer"
           >
             <Video className="w-3.5 h-3.5" />
             <span>Join Interview</span>
-          </button>
-
-          <button
-            onClick={() => toast('Opening rescheduling calendar')}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#13111a] border border-white/10 hover:border-white/20 text-white/90 hover:text-white text-[11px] font-semibold transition-all cursor-pointer"
-          >
-            <Calendar className="w-3.5 h-3.5 text-white/60" />
-            <span>Reschedule</span>
-          </button>
-
-          <button
-            onClick={() => toast('More interview settings')}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#13111a] border border-white/10 hover:border-white/20 text-white/90 hover:text-white text-[11px] font-semibold transition-all cursor-pointer"
-          >
-            <MoreHorizontal className="w-3.5 h-3.5" />
-            <span>More</span>
           </button>
         </div>
       </div>
@@ -180,14 +167,6 @@ export default function InterviewDetailView({ interview, onBack }) {
                     )}
                   </button>
                 </div>
-              </div>
-
-              <div className="flex items-center justify-between py-2 border-b border-white/5">
-                <div className="flex items-center gap-2 text-white/50">
-                  <Tag className="w-3.5 h-3.5 text-white/40" />
-                  <span>Status</span>
-                </div>
-                <div>{getStatusBadge(interview.status)}</div>
               </div>
 
               {/* Row 2 */}
@@ -289,17 +268,6 @@ export default function InterviewDetailView({ interview, onBack }) {
               </div>
 
               <div>
-                <span className="text-white/50 block mb-1">Preparation Material</span>
-                <button
-                  onClick={() => toast.success('Downloading shared preparation resources...')}
-                  className="flex items-center gap-1.5 text-[#c084fc] hover:text-[#d8b4fe] font-semibold transition-colors cursor-pointer"
-                >
-                  <Paperclip className="w-3.5 h-3.5" />
-                  <span>View Shared Resources ({interview.resourcesCount})</span>
-                </button>
-              </div>
-
-              <div>
                 <span className="text-white/50 block mb-1">Platform</span>
                 <span className="text-white font-semibold">{interview.platform}</span>
               </div>
@@ -307,12 +275,12 @@ export default function InterviewDetailView({ interview, onBack }) {
               <div>
                 <span className="text-white/50 block mb-1">Meeting Link</span>
                 <a
-                  href={interview.meetingLink}
+                  href={`/interview/${interview.id}`}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-1 text-[#c084fc] hover:text-[#d8b4fe] font-mono font-medium truncate hover:underline transition-all"
                 >
-                  <span className="truncate">{interview.meetingLink}</span>
+                  <span className="truncate">{`/interview/${interview.id}`}</span>
                   <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                 </a>
               </div>
@@ -342,14 +310,6 @@ export default function InterviewDetailView({ interview, onBack }) {
                     </div>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => toast(`Opening candidate profile for ${interview.candidate.name}`)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#221e30] border border-white/10 hover:border-white/20 text-white text-[11px] font-semibold transition-all cursor-pointer"
-                >
-                  <span>View Profile</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
               </div>
 
               {/* Interviewer */}
@@ -370,14 +330,6 @@ export default function InterviewDetailView({ interview, onBack }) {
                     </div>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => toast('Viewing your interviewer profile')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#221e30] border border-white/10 hover:border-white/20 text-white text-[11px] font-semibold transition-all cursor-pointer"
-                >
-                  <span>View Profile</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
               </div>
             </div>
           </div>
@@ -522,14 +474,6 @@ export default function InterviewDetailView({ interview, onBack }) {
                 )}
               </div>
             )}
-
-            <button
-              onClick={() => toast(`Opening candidate profile for ${interview.candidate.name}`)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#181524] border border-white/10 hover:border-white/20 text-white text-[11px] font-semibold transition-all cursor-pointer"
-            >
-              <span>View Full Profile</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
           </div>
 
 
@@ -552,14 +496,6 @@ export default function InterviewDetailView({ interview, onBack }) {
                 Job ID: <span className="font-mono text-white font-semibold">{interview.jobId}</span>
               </div>
             </div>
-
-            <button
-              onClick={() => toast(`Viewing job description for ${interview.jobRole}`)}
-              className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#181524] border border-white/10 hover:border-white/20 text-white text-[11px] font-semibold transition-all cursor-pointer"
-            >
-              <span>View Job</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
           </div>
 
           {/* Interview Summary Sidebar Card */}
@@ -580,11 +516,6 @@ export default function InterviewDetailView({ interview, onBack }) {
               <div className="flex items-center justify-between py-1.5 border-b border-white/5">
                 <span className="text-white/60">Duration</span>
                 <span className="font-semibold text-white">{interview.durationFull}</span>
-              </div>
-
-              <div className="flex items-center justify-between py-1.5 border-b border-white/5">
-                <span className="text-white/60">Status</span>
-                <div>{getStatusBadge(interview.status)}</div>
               </div>
 
               <div className="flex items-center justify-between py-1.5 border-b border-white/5">
@@ -613,76 +544,16 @@ export default function InterviewDetailView({ interview, onBack }) {
                 return (
                   <div key={idx} className="relative">
                     <div
-                      className={`absolute -left-[22px] top-1 w-3 h-3 rounded-full ${
-                        isLast
-                          ? 'bg-[#c084fc] ring-4 ring-[#7c3aed]/30'
-                          : 'bg-[#6C4F91]'
-                      }`}
+                      className={`absolute -left-[22px] top-1 w-3 h-3 rounded-full ${isLast
+                        ? 'bg-[#c084fc] ring-4 ring-[#7c3aed]/30'
+                        : 'bg-[#6C4F91]'
+                        }`}
                     />
                     <div className="text-[11px] font-bold text-white">{step.title}</div>
                     <div className="text-[10px] text-white/50 font-mono mt-0.5">{step.date}</div>
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Actions Card */}
-          <div className="bg-[#110e17] border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-white tracking-tight">Actions</h3>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => toast('Opening reschedule options')}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-[#171422] border border-white/5 hover:border-white/15 text-left transition-all cursor-pointer group"
-              >
-                <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-500/20 text-[#c084fc] group-hover:scale-105 transition-transform">
-                  <Calendar className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-white">Reschedule Interview</div>
-                  <div className="text-[9px] text-white/50">Change the date or time</div>
-                </div>
-              </button>
-
-              <button
-                onClick={() => toast.error('Cancelling interview request initiated')}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-[#171422] border border-white/5 hover:border-rose-500/30 text-left transition-all cursor-pointer group"
-              >
-                <div className="p-2 rounded-lg bg-rose-950/60 border border-rose-500/20 text-rose-400 group-hover:scale-105 transition-transform">
-                  <XCircle className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-white group-hover:text-rose-300">Cancel Interview</div>
-                  <div className="text-[9px] text-white/50">Cancel this interview</div>
-                </div>
-              </button>
-
-              <button
-                onClick={() => handleCopy(interview.meetingLink, 'Meeting Link')}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-[#171422] border border-white/5 hover:border-white/15 text-left transition-all cursor-pointer group"
-              >
-                <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-500/20 text-[#c084fc] group-hover:scale-105 transition-transform">
-                  <Share2 className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-white">Share Interview Link</div>
-                  <div className="text-[9px] text-white/50">Copy and share the meeting link</div>
-                </div>
-              </button>
-
-              <button
-                onClick={() => toast.success('Calendar invite (.ics) downloaded')}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-[#171422] border border-white/5 hover:border-white/15 text-left transition-all cursor-pointer group"
-              >
-                <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-500/20 text-[#c084fc] group-hover:scale-105 transition-transform">
-                  <Download className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-white">Download Calendar Invite</div>
-                  <div className="text-[9px] text-white/50">Save to your calendar</div>
-                </div>
-              </button>
             </div>
           </div>
         </div>

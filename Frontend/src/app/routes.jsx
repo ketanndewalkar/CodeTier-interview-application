@@ -13,17 +13,25 @@ import ApplicationsPage from "../pages/Candidate/ApplicationsPage";
 import InterviewsPage from "../pages/Candidate/InterviewsPage";
 import InterviewerDashboard from "../pages/interviewer/InterviewerDashboard";
 import OrganizationDashboard from "../pages/organization/OrganizationDashboard";
+import EnvironmentLayout from "../environment/EnvironmentLayout";
+import InterviewLayout from "../environment/layout/InterviewLayout";
+import InterviewDetails from "../environment/pages/InterviewDetails";
+import Lobby from "../environment/pages/Lobby";
+
+// Placeholders for unimplemented components to prevent routing ReferenceErrors
+const Workspace = () => <div className="min-h-screen bg-[#07070b] text-neutral-400 flex items-center justify-center">Workspace (Coming Soon)</div>;
 
 
 
-const publicRoutes=[
+
+const publicRoutes = [
   {
     path: "/",
-    element: <><AppLayout/></>,
+    element: <><AppLayout /></>,
     children: [
       {
         index: true,
-        element: <><Home/></>,
+        element: <><Home /></>,
       },
       {
         path: "about",
@@ -39,32 +47,32 @@ const publicRoutes=[
       },
       {
         path: "login",
-        element: <><Login/></>,
+        element: <><Login /></>,
       },
       {
-        path:"sign-up",
-        element:<><SignUp/></>
-    }
+        path: "sign-up",
+        element: <><SignUp /></>
+      }
     ],
   },
 ]
 
 const candidateRoutes = [
-    {
-        path:"/dashboard",
-        element:<ProtectedRoute roleAllowed={"candidate"} children={<Outlet/>}/>,
-        children:[
-            {
-                element: <Dashboard />,
-                children: [
-                    { index: true, element: <DashboardOverview /> },
-                    { path: "jobs", element: <JobsSectionPage /> },
-                    { path: "applications", element: <ApplicationsPage /> },
-                    { path: "interviews", element: <InterviewsPage /> },
-                ]
-            }
+  {
+    path: "/dashboard",
+    element: <ProtectedRoute roleAllowed={"candidate"} children={<Outlet />} />,
+    children: [
+      {
+        element: <Dashboard />,
+        children: [
+          { index: true, element: <DashboardOverview /> },
+          { path: "jobs", element: <JobsSectionPage /> },
+          { path: "applications", element: <ApplicationsPage /> },
+          { path: "interviews", element: <InterviewsPage /> },
         ]
-    }
+      }
+    ]
+  }
 ]
 
 const companyRoutes = [
@@ -82,6 +90,36 @@ const companyRoutes = [
     ],
   },
 ];
+
+const InterviewEnvironment = [
+  {
+
+    path: "/interview/:interviewId",
+
+    element: <InterviewLayout />,
+
+    children: [
+
+      {
+        index: true,
+        element: <InterviewDetails />
+      },
+
+      {
+        path: "room",
+        element: <Lobby />
+      },
+
+
+      {
+        path: "workspace",
+        element: <EnvironmentLayout />
+      }
+
+    ]
+
+  }
+]
 
 
 const interviewerRoutes = [
@@ -106,8 +144,9 @@ export const router = createBrowserRouter([
   ...candidateRoutes,
   ...interviewerRoutes,
   ...companyRoutes,
+  ...InterviewEnvironment,
   {
-    path:"*",
-    element:<>404 Not Found</>
+    path: "*",
+    element: <>404 Not Found</>
   }
 ]);
