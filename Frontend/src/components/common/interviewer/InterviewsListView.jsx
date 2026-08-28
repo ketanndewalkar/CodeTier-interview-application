@@ -299,9 +299,9 @@ export default function InterviewsListView({ onSelectInterview }) {
     const portfolioLinks = app.portfolioLinks && app.portfolioLinks.length > 0
       ? app.portfolioLinks
       : (item.candidate?.portfolioLinks || [
-          { platform: 'GITHUB', url: 'https://github.com' },
-          { platform: 'LINKEDIN', url: 'https://linkedin.com' },
-        ]);
+        { platform: 'GITHUB', url: 'https://github.com' },
+        { platform: 'LINKEDIN', url: 'https://linkedin.com' },
+      ]);
 
     return {
       id: item._id || item.id,
@@ -386,10 +386,10 @@ export default function InterviewsListView({ onSelectInterview }) {
             SCHEDULED
           </span>
         );
-      case 'IN PROGRESS':
+      case 'IN_PROGRESS':
         return (
           <span className="px-3 py-1 rounded-full bg-[#1e3a8a]/80 border border-blue-500/50 text-blue-300 font-bold text-[10px] tracking-wider uppercase">
-            IN PROGRESS
+            IN_PROGRESS
           </span>
         );
       case 'COMPLETED':
@@ -424,7 +424,6 @@ export default function InterviewsListView({ onSelectInterview }) {
       </span>
     );
   };
-
   return (
     <div className="space-y-6">
       {/* Title Header */}
@@ -435,41 +434,7 @@ export default function InterviewsListView({ onSelectInterview }) {
 
       {/* Filter Tabs & Right Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        {/* Status Pills */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {filterTabs.map((tab) => {
-            const isActive = activeFilter === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveFilter(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[11px] font-semibold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-[#6C4F91] text-white shadow-md shadow-[#6C4F91]/20 border border-[#8b65b8]'
-                    : 'bg-[#13111a] text-white/60 hover:text-white hover:bg-white/10 border border-white/5'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-white/50'
-                  }`}
-                >
-                  {tab.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
 
-        {/* Filters Button */}
-        <button
-          onClick={() => toast('Filter preferences open')}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#13111a] border border-white/10 text-white/80 hover:text-white hover:border-white/20 text-[11px] font-medium transition-all cursor-pointer shadow-sm"
-        >
-          <Filter className="w-3.5 h-3.5 text-white/60" />
-          <span>Filters</span>
-        </button>
       </div>
 
       {/* Interviews Table Container */}
@@ -542,13 +507,6 @@ export default function InterviewsListView({ onSelectInterview }) {
                         <span>View Details</span>
                         <ChevronDown className="w-3 h-3 text-white/40" />
                       </button>
-
-                      <button
-                        onClick={() => toast(`Options for ${item.candidate.name}`)}
-                        className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                      >
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -569,11 +527,10 @@ export default function InterviewsListView({ onSelectInterview }) {
             <button
               key={p}
               onClick={() => setCurrentPage(p)}
-              className={`w-8 h-8 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
-                currentPage === p
-                  ? 'bg-[#6C4F91] text-white border border-[#8b65b8]'
-                  : 'bg-[#181524] text-white/60 hover:text-white border border-white/10'
-              }`}
+              className={`w-8 h-8 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${currentPage === p
+                ? 'bg-[#6C4F91] text-white border border-[#8b65b8]'
+                : 'bg-[#181524] text-white/60 hover:text-white border border-white/10'
+                }`}
             >
               {p}
             </button>

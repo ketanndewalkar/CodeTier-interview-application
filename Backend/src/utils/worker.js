@@ -27,12 +27,13 @@ const worker = new Worker(
       const result = await setupInterviewEnvironment(job.data.interviewId);
       return result;
     } catch (err) {
+      console.log(err)
       const interviewEnvironment = await InterviewEnvironment.findOneAndUpdate({
-        interviewId
-      },{
-        status:"FAILED"
-      },{
-        new:true
+        interviewId: job.data.interviewId
+      }, {
+        status: "FAILED"
+      }, {
+        new: true
       })
       throw err;
     }
@@ -46,17 +47,17 @@ worker.on("completed", (job) => {
   console.log(`Job ${job.id} completed`);
 });
 
-worker.on("failed", (job, err) => {
-  if(job.attemptsMade === job.opts.attempts){
-        await InterviewEnvironment.findOneAndUpdate(
-          {
-            interviewId: job.data.interviewId
-          },
-          {
-            status:"FAILED"
-          }
-        )
-    }
+worker.on("failed", async (job, err) => {
+  if (job.attemptsMade === job.opts.attempts) {
+    await InterviewEnvironment.findOneAndUpdate(
+      {
+        interviewId: job.data.interviewId
+      },
+      {
+        status: "FAILED"
+      }
+    )
+  }
 });
 
 const shutdown = async () => {

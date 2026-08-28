@@ -5,9 +5,7 @@ import App from "./App.jsx";
 import { QueryClientProviderWrapper } from "./app/provider.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <QueryClientProviderWrapper>
       <App />
     </QueryClientProviderWrapper>
-  </StrictMode>,
 );

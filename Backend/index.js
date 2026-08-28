@@ -33,7 +33,18 @@ app.use(
   }),
 );
 
+app.get("/", async () => {
+  await interviewQueue.add(
+    "prepare-interview",
+    {
+      interviewId: "6a8893c4a4e06fe2e179681d",
+    },
+    {
+      delay: 0,
+    },
+  );
 
+})
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/job", jobRoutes);
 app.use("/api/v1/application", ApplicationRoutes)

@@ -1,9 +1,5 @@
-import Docker from "dockerode";
+import docker from "../../config/docker.js";
 
-const docker = new Docker({
-  host: "localhost",
-  port: 2375,
-});
 
 
 const ensureImage = async (image) => {
@@ -102,7 +98,7 @@ export const createContainer = async ({
 
   // Add port configuration only if environment supports preview
 
-  if(environment.supportsPreview && environment.previewPort){
+  if (environment.supportsPreview && environment.previewPort) {
 
     containerConfig.ExposedPorts = {
 

@@ -1,13 +1,18 @@
 import { Calendar, Clock, Video, CheckCircle2, ChevronRight } from 'lucide-react';
 import { useInterviews } from './hooks/useInterviews';
+import { useNavigate } from 'react-router-dom';
 
 function InterviewCard({ interview }) {
-  const dateStr = interview.startTime 
-    ? new Date(interview.startTime).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) 
+  const navigate = useNavigate();
+  console.log(interview)
+  const dateStr = interview.startTime
+    ? new Date(interview.startTime).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : 'Pending Scheduling';
-    
-  const timeStr = interview.startTime 
-    ? new Date(interview.startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) 
+  const now = new Date();
+  const canJoin = interview.startTime && now >= new Date(interview.startTime) && interview.status === 'READY';
+  console.log(canJoin)
+  const timeStr = interview.startTime
+    ? new Date(interview.startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
     : 'TBD';
 
   const jobTitle = interview.jobOpeningId?.title || 'Job Interview';
@@ -18,7 +23,7 @@ function InterviewCard({ interview }) {
   return (
     <div className="bg-[#120d20]/70 backdrop-blur-xl rounded-[23px] p-5 sm:p-6 text-white border border-white/15 hover:border-[#a855f7]/50 transition-all duration-300 shadow-xl group">
       <div className="flex flex-col md:flex-row gap-5 md:items-center justify-between">
-        
+
         {/* Left Side: Job & Date */}
         <div className="flex gap-5 items-start">
           {/* Calendar Box */}
@@ -26,14 +31,14 @@ function InterviewCard({ interview }) {
             <span className="text-xs text-purple-300/80 font-medium">{interview.startTime ? new Date(interview.startTime).toLocaleDateString('en-GB', { month: 'short' }) : 'TBD'}</span>
             <span className="text-lg font-bold text-white leading-none">{interview.startTime ? new Date(interview.startTime).getDate() : '-'}</span>
           </div>
-          
+
           <div className="space-y-1.5">
             <h3 className="font-heading text-lg font-bold text-white tracking-tight">{jobTitle}</h3>
             <div className="flex items-center gap-2 text-sm text-purple-200/70 font-medium">
               <span>{company}</span>
               {interview.organizationId?.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-white fill-[#a855f7]" />}
             </div>
-            
+
             <div className="flex items-center gap-3 pt-1 text-xs font-medium">
               <div className="flex items-center gap-1.5 text-purple-300 bg-purple-900/30 px-2 py-1 rounded-md border border-purple-800/30">
                 <Clock className="w-3 h-3" />
@@ -51,10 +56,11 @@ function InterviewCard({ interview }) {
           <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-semibold tracking-wider text-purple-200 uppercase">
             {status}
           </span>
-          
-          <button 
-            disabled={status !== 'READY'}
-            className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${status === 'READY' ? 'bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]' : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/5'}`}
+
+          <button
+            disabled={canJoin}
+            onClick={() => navigate(`/interview/${interview._id}`)}
+            className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-[0_0_20px_rgba(139,92,246,0.3)]`}
           >
             <Video className="w-4 h-4" />
             <span>Join Interview</span>
@@ -83,13 +89,13 @@ export default function InterviewsPage() {
       {/* Header */}
       <div className="bg-[#110e17] border border-white/12 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        
+
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white tracking-tight">Your Interviews</h1>
             <p className="text-purple-200/60 text-sm mt-1">Manage and join your scheduled technical interviews.</p>
           </div>
-          
+
           <div className="flex items-center gap-3 bg-[#181322] border border-white/10 px-4 py-2 rounded-xl text-sm font-medium">
             <span className="text-purple-200/60">Upcoming:</span>
             <span className="text-white font-bold">{interviews?.filter(i => i.status !== 'COMPLETED').length || 0}</span>
