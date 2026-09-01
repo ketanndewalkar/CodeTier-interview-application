@@ -1,0 +1,129 @@
+[
+    {
+        "_id": {
+            "$oid": "6a68aaa8f8525723b7348d20"
+        },
+        "name": "React + Vite",
+        "language": "REACT",
+        "dockerImage": "ketan980/react-temp:latest",
+        "workspaceTemplate": "https://github.com/ketanndewalkar/react-temp.git",
+        "supportsPreview": true,
+        "previewPort": 5173,
+        "compileCommand": [
+            "npm install --legacy-peer-deps"
+        ],
+        "containerStartCommand": [
+            "sh",
+            "-c",
+            "echo \"Installing dependencies...\"\nnpm install\necho \"Watching package.json changes...\"\n(\n  while true\n  do\n    inotifywait -e modify /workspace/package.json\n\n    echo \"package.json changed\"\n    echo \"Updating node_modules...\"\n\n    npm install\n\n  done\n) &\necho \"Starting React server...\"\nnpm run dev"
+        ],
+        "runCommand": [],
+        "cpuLimit": "1",
+        "memoryLimit": "1g",
+        "timeoutSeconds": 3600,
+        "isActive": true
+    },
+    {
+        "_id": {
+            "$oid": "6a698c2c0ad201807fee1adf"
+        },
+        "name": "C++ GCC",
+        "language": "CPP",
+        "dockerImage": "gcc:latest",
+        "workspaceTemplate": "https://github.com/ketanndewalkar/CPP-template.git",
+        "supportsPreview": false,
+        "containerStartCommand": [
+            "sleep",
+            "infinity"
+        ],
+        "compileCommand": [
+            "g++",
+            "main.cpp",
+            "-o",
+            "main"
+        ],
+        "executionCommand": [
+            "./main"
+        ],
+        "cpuLimit": "1",
+        "memoryLimit": "1g",
+        "timeoutSeconds": 3600,
+        "isActive": true
+    },
+    {
+        "_id": {
+            "$oid": "6a698c2c0ad201807fee1ae0"
+        },
+        "name": "Python 3",
+        "language": "PYTHON",
+        "dockerImage": "python:3.12-slim",
+        "workspaceTemplate": "https://github.com/ketanndewalkar/Python-template.git",
+        "supportsPreview": false,
+        "containerStartCommand": [
+            "sleep",
+            "infinity"
+        ],
+        "compileCommand": [],
+        "executionCommand": [
+            "python",
+            "main.py"
+        ],
+        "cpuLimit": "1",
+        "memoryLimit": "1g",
+        "timeoutSeconds": 3600,
+        "isActive": true
+    },
+    {
+        "_id": {
+            "$oid": "6a698c2c0ad201807fee1ae1"
+        },
+        "name": "C GCC",
+        "language": "C",
+        "dockerImage": "gcc:latest",
+        "workspaceTemplate": "https://github.com/ketanndewalkar/C-template.git",
+        "supportsPreview": false,
+        "containerStartCommand": [
+            "sleep",
+            "infinity"
+        ],
+        "compileCommand": [
+            "gcc",
+            "main.c",
+            "-o",
+            "main"
+        ],
+        "executionCommand": [
+            "./main"
+        ],
+        "cpuLimit": "1",
+        "memoryLimit": "1g",
+        "timeoutSeconds": 3600,
+        "isActive": true
+    },
+    {
+        "_id": {
+            "$oid": "6a698c2c0ad201807fee1ae2"
+        },
+        "name": "Java JDK 21",
+        "language": "JAVA",
+        "dockerImage": "openjdk:21-jdk-slim",
+        "workspaceTemplate": "https://github.com/ketanndewalkar/Java-template.git",
+        "supportsPreview": false,
+        "containerStartCommand": [
+            "sleep",
+            "infinity"
+        ],
+        "compileCommand": [
+            "javac",
+            "Main.java"
+        ],
+        "executionCommand": [
+            "java",
+            "Main"
+        ],
+        "cpuLimit": "1",
+        "memoryLimit": "1g",
+        "timeoutSeconds": 3656,
+        "isActive": false
+    }
+]

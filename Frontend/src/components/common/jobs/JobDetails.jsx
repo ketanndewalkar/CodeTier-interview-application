@@ -79,7 +79,7 @@ export default function JobDetails({ job, onBack }) {
               </h1>
 
               <div className="flex items-center gap-1.5 text-sm text-purple-200/90 font-medium">
-                <span>{job?.company || 'BajuGali Influencer'}</span>
+                <span>{job?.company || job?.organizationName || 'Organization'}</span>
                 <CheckCircle2 className="w-4 h-4 text-white fill-[#a855f7] inline-block shrink-0" />
               </div>
 

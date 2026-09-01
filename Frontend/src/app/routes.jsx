@@ -5,7 +5,6 @@ import Login from "../pages/Auth/Login";
 import SignUp from "../pages/Auth/SignUp";
 import Home from "../pages/Home/Home";
 import About from "../pages/Home/About";
-import Contact from "../pages/Home/Contact";
 import Dashboard from "../pages/Candidate/Dashboard";
 import DashboardOverview from "../pages/Candidate/DashboardOverview";
 import JobsSectionPage from "../pages/Candidate/JobsSection";
@@ -41,19 +40,15 @@ const publicRoutes = [
         path: "about-us",
         element: <About />,
       },
-      {
-        path: "contact",
-        element: <Contact />,
-      },
-      {
-        path: "login",
-        element: <><Login /></>,
-      },
-      {
-        path: "sign-up",
-        element: <><SignUp /></>
-      }
     ],
+  },
+  {
+    path: "/login",
+    element: <><Login /></>,
+  },
+  {
+    path: "/sign-up",
+    element: <><SignUp /></>,
   },
 ]
 
@@ -91,6 +86,8 @@ const companyRoutes = [
   },
 ];
 
+import InterviewEnded from "../environment/pages/InterviewEnded";
+
 const InterviewEnvironment = [
   {
 
@@ -114,10 +111,19 @@ const InterviewEnvironment = [
       {
         path: "workspace",
         element: <EnvironmentLayout />
+      },
+
+      {
+        path: "ended",
+        element: <InterviewEnded />
       }
 
     ]
 
+  },
+  {
+    path: "/interview-ended",
+    element: <InterviewEnded />
   }
 ]
 

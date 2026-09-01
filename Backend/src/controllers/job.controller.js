@@ -9,17 +9,26 @@ export const getAllJobsOpenings = asyncHandler(async (req, res) => {
   if (organizationId && req.user._id.toString() == organizationId) {
     const jobs = await Job.find({
       organizationId,
+    }).populate("organizationId", "name email username");
+
+    const formattedJobs = jobs.map((job) => {
+      const jobObj = job.toObject();
+      const companyName = job.organizationId?.name || req.user?.name || "Organization";
+      jobObj.company = companyName;
+      jobObj.organizationName = companyName;
+      return jobObj;
     });
+
     return res
       .status(200)
-      .json(new ApiResponse(200, "Job Successfully Fetched.", jobs));
+      .json(new ApiResponse(200, "Job Successfully Fetched.", formattedJobs));
   }
 
   const jobs = await Job.find({
     status: {
       $in: ["OPEN", "CLOSED", "PAUSED"],
     },
-  });
+  }).populate("organizationId", "name email username");
 
   // Check which jobs the candidate has applied for
   let appliedJobIds = new Set();
@@ -31,6 +40,9 @@ export const getAllJobsOpenings = asyncHandler(async (req, res) => {
   const jobsWithApplied = jobs.map(job => {
     const jobObj = job.toObject();
     jobObj.isApplied = appliedJobIds.has(job._id.toString());
+    const companyName = job.organizationId?.name || "Organization";
+    jobObj.company = companyName;
+    jobObj.organizationName = companyName;
     return jobObj;
   });
 
@@ -104,9 +116,15 @@ export const createJobOpening = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Server Issue");
   }
 
+  const populatedJob = await Job.findById(newJob._id).populate("organizationId", "name email username");
+  const jobObj = populatedJob ? populatedJob.toObject() : newJob.toObject();
+  const companyName = populatedJob?.organizationId?.name || req.user?.name || "Organization";
+  jobObj.company = companyName;
+  jobObj.organizationName = companyName;
+
   return res
     .status(201)
-    .json(new ApiResponse(201, "Published Job Opening", newJob));
+    .json(new ApiResponse(201, "Published Job Opening", jobObj));
 });
 
 export const getJobByID = asyncHandler(async (req, res) => {
@@ -115,7 +133,7 @@ export const getJobByID = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid Unique Parameter");
   }
 
-  const job = await Job.findById(id);
+  const job = await Job.findById(id).populate("organizationId", "name email username");
   if (!job) {
     throw new ApiError(401, "Job Opening dont Exist");
   }
@@ -130,6 +148,9 @@ export const getJobByID = asyncHandler(async (req, res) => {
     isApplied = !!existApplication;
   }
   jobObj.isApplied = isApplied;
+  const companyName = job.organizationId?.name || "Organization";
+  jobObj.company = companyName;
+  jobObj.organizationName = companyName;
 
   return res.status(200).json(new ApiResponse(200, "Job Opening Fetched", jobObj));
 });
@@ -251,3 +272,7 @@ export const changeStatusOfJobOpening = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, "Status Updated.", updatedJob));
 });
+
+export const submitInterviewEvaluation = asyncHandler(async (req, res) => {
+
+})

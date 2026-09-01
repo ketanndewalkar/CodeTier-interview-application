@@ -23,12 +23,17 @@ export default function CTASection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 max-w-md sm:max-w-none mx-auto"
+            className="flex justify-center pt-2 max-w-md sm:max-w-none mx-auto"
           >
-            <button className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-[#baf2ff] text-[#00363f] font-bold text-xs rounded-xl hover:shadow-[0_0_30px_rgba(186,242,255,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest">
-              REQUEST DEMO
-            </button>
-            <button className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 border border-white/20 text-white font-bold text-xs rounded-xl hover:bg-white/5 transition-colors uppercase tracking-widest">
+            <button
+              onClick={() => {
+                const element = document.getElementById('interview-lifecycle');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 text-white font-bold text-xs rounded-xl transition-all uppercase tracking-widest cursor-pointer shadow-lg"
+            >
               VIEW DOCUMENTATION
             </button>
           </motion.div>

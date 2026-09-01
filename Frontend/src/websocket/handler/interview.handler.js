@@ -17,6 +17,11 @@ export const interviewSocketHandler = (data) => {
         case INTERVIEW_EVENTS.JOIN_ROOM_ACK:
             setIsEnterRoom(true);
             break;
+        case INTERVIEW_EVENTS.INTERVIEW_ENDED:
+        case "INTERVIEW_ENDED":
+            toast.success("The interview session has ended.");
+            window.dispatchEvent(new CustomEvent("interview-ended", { detail: data.payload }));
+            break;
         default:
             console.warn(`Unhandled interview event: ${event}`);
     }

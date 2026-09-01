@@ -1,6 +1,6 @@
 import express from "express"
 import { authMiddleware, isAllowed } from "../middlewares/auth.middleware.js"
-import { joinInterview, getCandidateInterviews, getInterviewerInterviews, getOrganizationInterviews, stopInterviewEnvironment, fetchInterviewById, fetchRoomById, getInterviewWorkspaceDirectory, createWorkspaceEntity, renameWorkspaceEntity, deleteWorkspaceEntity, fetchWorkspaceFile, updateWorkspaceFile, getInterviewEnvironment } from "../controllers/interview.controller.js"
+import { joinInterview, getCandidateInterviews, getInterviewerInterviews, getOrganizationInterviews, stopInterviewEnvironment, fetchInterviewById, fetchRoomById, getInterviewWorkspaceDirectory, createWorkspaceEntity, renameWorkspaceEntity, deleteWorkspaceEntity, fetchWorkspaceFile, updateWorkspaceFile, getInterviewEnvironment, submitInterviewEvaluation } from "../controllers/interview.controller.js"
 
 const router = express.Router()
 
@@ -18,5 +18,7 @@ router.delete("/interview/:id/workspace", authMiddleware, isAllowed("INTERVIEWER
 router.get("/interview/:id/workspace/file", authMiddleware, isAllowed("INTERVIEWER", "CANDIDATE"), fetchWorkspaceFile)
 router.put("/interview/:id/workspace/file", authMiddleware, isAllowed("INTERVIEWER", "CANDIDATE"), updateWorkspaceFile)
 router.get("/interview/:id/environment", authMiddleware, isAllowed("INTERVIEWER", "CANDIDATE"), getInterviewEnvironment)
+router.post("/:id/evaluate", authMiddleware, isAllowed("INTERVIEWER", "ORGANIZATION"), submitInterviewEvaluation)
 export const interviewRoutes = router;
+
 

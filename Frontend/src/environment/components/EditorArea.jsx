@@ -15,6 +15,8 @@ import Editor from '@monaco-editor/react';
 import { fetchWorkspaceFile, updateWorkspaceFile } from '../functions/explorer.function';
 import { useWorkspaceStore } from '../../store/workspace.store';
 import toast from 'react-hot-toast';
+import { useUserStore } from '../../store/userStore';
+import { EvaluationModal } from './EvaluationModal';
 
 const getEditorLanguage = (filename) => {
   if (!filename) return 'javascript';
@@ -30,7 +32,8 @@ const getEditorLanguage = (filename) => {
 const EditorArea = ({ activeFile, onSelectFile, onRunCode }) => {
   const { interviewId } = useParams();
   const environmentInfo = useWorkspaceStore(state => state.environmentInfo);
-
+  const user = useUserStore((state) => state.user);
+  const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState(false);
   const [openTabs, setOpenTabs] = useState(activeFile ? [activeFile] : []);
   const [seconds, setSeconds] = useState(2535); // 00:42:15 in seconds
   const [language, setLanguage] = useState('JAVASCRIPT');
@@ -198,8 +201,11 @@ const EditorArea = ({ activeFile, onSelectFile, onRunCode }) => {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 text-xs font-medium bg-[#1a1924] hover:bg-[#252335] text-neutral-300 hover:text-white px-3 py-1.5 rounded-lg border border-neutral-800/80 transition-all cursor-pointer">
+          {user?.role === "INTERVIEWER" || user?.role === "ORGANIZATION" ? <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsEvaluationModalOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-medium bg-[#1a1924] hover:bg-[#252335] text-neutral-300 hover:text-white px-3 py-1.5 rounded-lg border border-neutral-800/80 transition-all cursor-pointer"
+            >
               <Square size={12} className="fill-neutral-400 text-neutral-400 group-hover:text-white" />
               Stop
             </button>
@@ -207,7 +213,7 @@ const EditorArea = ({ activeFile, onSelectFile, onRunCode }) => {
               <LogOut size={12} />
               Exit
             </button>
-          </div>
+          </div> : <></>}
         </div>
       </div>
 
@@ -370,6 +376,12 @@ const EditorArea = ({ activeFile, onSelectFile, onRunCode }) => {
           </div>
         )}
       </div>
+
+      <EvaluationModal
+        isOpen={isEvaluationModalOpen}
+        onClose={() => setIsEvaluationModalOpen(false)}
+        interviewId={interviewId}
+      />
     </div>
   );
 };

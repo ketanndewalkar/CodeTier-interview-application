@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useOutletContext, useNavigate, useParams } from 'react-router-dom';
 import { Explorer } from './components/Explorer';
 import EditorArea from './components/EditorArea';
 import TerminalArea from './components/TerminalArea';
@@ -9,6 +9,20 @@ import useEnvironment from './hooks/useEnvironment';
 const EnvironmentLayout = () => {
   useEnvironment();
   const { socket } = useOutletContext();
+  const navigate = useNavigate();
+  const { interviewId } = useParams();
+
+  useEffect(() => {
+    const handleInterviewEnded = (e) => {
+      const targetId = e.detail?.interviewId || interviewId;
+      navigate(`/interview/${targetId}/ended`, { replace: true });
+    };
+
+    window.addEventListener('interview-ended', handleInterviewEnded);
+    return () => {
+      window.removeEventListener('interview-ended', handleInterviewEnded);
+    };
+  }, [interviewId, navigate]);
 
   const [activeFile, setActiveFile] = useState('src/App.jsx');
   const [terminalLogs, setTerminalLogs] = useState([

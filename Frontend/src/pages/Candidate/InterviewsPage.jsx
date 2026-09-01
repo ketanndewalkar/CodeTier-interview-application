@@ -4,13 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 function InterviewCard({ interview }) {
   const navigate = useNavigate();
-  console.log(interview)
   const dateStr = interview.startTime
     ? new Date(interview.startTime).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : 'Pending Scheduling';
   const now = new Date();
   const canJoin = interview.startTime && now >= new Date(interview.startTime) && interview.status === 'READY';
-  console.log(canJoin)
   const timeStr = interview.startTime
     ? new Date(interview.startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
     : 'TBD';

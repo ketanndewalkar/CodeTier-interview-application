@@ -37,7 +37,6 @@ const useInterviewDetails = () => {
       setRoomId(res.roomId);
     },
     onError: (err) => {
-      console.log(err);
     },
   });
 

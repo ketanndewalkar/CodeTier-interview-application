@@ -141,7 +141,7 @@ const useVideoFeedSidebar = () => {
                     }));
                 }
             } catch (error) {
-                console.log("Negotiation error:", error);
+                // negotiation error silenced
             } finally {
                 peer.makingOffer = false;
             }
@@ -258,7 +258,7 @@ const useVideoFeedSidebar = () => {
             await peer.pc.addIceCandidate(message.payload.candidate);
         } catch (error) {
             if (!peer.ignoreOffer) {
-                console.log("ICE Candidate Error:", error);
+                // ICE candidate error silenced
             }
         }
     }, []);
@@ -324,7 +324,7 @@ const useVideoFeedSidebar = () => {
                         handleIceCandidate(result); break;
                 }
             } catch (error) {
-                console.log("Error parsing websocket RTC message:", error);
+                // RTC message parse error silenced
             }
         };
 

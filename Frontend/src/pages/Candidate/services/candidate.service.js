@@ -21,7 +21,6 @@ export const fetchCandidateDashboardStats = async () => {
  */
 export const fetchJobs = async () => {
   const res = await api.get("/job/get-all");
-  console.log(res.data)
   return res.data.data;
 };
 

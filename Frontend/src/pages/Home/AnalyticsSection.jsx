@@ -11,29 +11,27 @@ export default function AnalyticsSection() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-start relative z-10">
             
-            {/* Card 1: Candidate Success / Interview Analytics */}
+            {/* Card 1: Real-Time Coding Environment */}
             <div className="space-y-6 sm:space-y-8">
               <div className="flex items-center justify-between">
                 <span className="font-code text-[10px] sm:text-[11px] text-[#eedcff] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold">
-                  INTERVIEW ANALYTICS // 01
+                  LIVE CODE INTERVIEWS // 01
                 </span>
                 <span className="material-symbols-outlined text-white/20 text-xl sm:text-2xl">
-                  trending_up
+                  code
                 </span>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <h3 className="text-white/40 font-code text-[9px] sm:text-[10px] tracking-widest uppercase">
-                  Technical Interviews Conducted
+                  Real-Time Collaborative Coding
                 </h3>
-                <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  <span className="text-white text-4xl sm:text-6xl font-bold tracking-tighter">
-                    10,000+
-                  </span>
-                  <span className="text-[#00ec3b] text-xs sm:text-sm font-bold">
-                    +24% Growth
-                  </span>
-                </div>
+                <p className="text-white text-base sm:text-lg font-medium leading-relaxed">
+                  Watch candidates solve real problems in a live, multi-language code editor — with instant execution and built-in test cases.
+                </p>
+                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">
+                  No more whiteboard guesswork. Evaluate actual coding ability as it happens, with full syntax highlighting and auto-completion.
+                </p>
               </div>
 
               {/* Bar Chart Visual */}
@@ -49,50 +47,48 @@ export default function AnalyticsSection() {
               {/* Badge Bottom */}
               <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#eedcff] text-sm shrink-0">
-                  code
+                  terminal
                 </span>
                 <span className="text-[9px] font-code text-white/60 uppercase tracking-wider">
-                  Live Coding Sessions: 98% Completion Rate
+                  Multi-Language Support · Instant Code Execution ✓
                 </span>
               </div>
             </div>
 
-            {/* Card 2: Time to Hire / Hiring Efficiency */}
+            {/* Card 2: Streamlined Hiring Process */}
             <div className="space-y-6 sm:space-y-8 py-8 lg:py-0 border-y lg:border-y-0 lg:border-x border-white/10 lg:px-12">
               <div className="flex items-center justify-between">
                 <span className="font-code text-[10px] sm:text-[11px] text-[#eedcff] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold">
-                  HIRING EFFICIENCY // 02
+                  STREAMLINED EVALUATION // 02
                 </span>
                 <span className="material-symbols-outlined text-white/20 text-xl sm:text-2xl">
                   timer
                 </span>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <h3 className="text-white/40 font-code text-[9px] sm:text-[10px] tracking-widest uppercase">
-                  Faster Evaluation Process
+                  End-to-End Interview Pipeline
                 </h3>
-                <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  <span className="text-white text-4xl sm:text-6xl font-bold tracking-tighter">
-                    72%
-                  </span>
-                  <span className="text-[#00ec3b] text-xs font-bold tracking-widest uppercase">
-                    Optimized
-                  </span>
-                </div>
+                <p className="text-white text-base sm:text-lg font-medium leading-relaxed">
+                  Replace fragmented tools with one unified platform — from scheduling interviews to generating structured evaluations.
+                </p>
+                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">
+                  Dramatically cut your time-to-decision with automated rubric scoring and side-by-side candidate comparisons.
+                </p>
               </div>
 
               {/* Progress Bar Visual */}
               <div className="p-4 sm:p-6 bg-white/[0.03] rounded-2xl border border-white/5 space-y-4">
                 <div className="flex justify-between items-center text-[9px] font-code text-white/30">
-                  <span>MANUAL VS AI ASSISTED</span>
-                  <span className="text-[#eedcff]">AI POWERED</span>
+                  <span>UNSTRUCTURED INTERVIEWS</span>
+                  <span className="text-[#eedcff]">STRUCTURED SCORECARD</span>
                 </div>
                 <div className="w-full h-2 bg-black rounded-full overflow-hidden p-0.5 border border-white/5">
                   <motion.div 
                     initial={{ width: '0%' }}
-                    whileInView={{ width: '72%' }}
-                    transition={{ duration: 1 }}
+                    whileInView={{ width: '100%' }}
+                    transition={{ duration: 1.2 }}
                     className="h-full bg-[#6c4f91] rounded-full shadow-[0_0_12px_rgba(108,79,145,0.7)]" 
                   />
                 </div>
@@ -104,59 +100,57 @@ export default function AnalyticsSection() {
                   shield
                 </span>
                 <span className="text-[9px] font-code text-white/60 uppercase tracking-wider">
-                  Secure Execution: Container Isolated ✓
+                  Sandboxed Execution · Container Isolated ✓
                 </span>
               </div>
             </div>
 
-            {/* Card 3: AI Insights / Evaluation Confidence */}
+            {/* Card 3: AI-Powered Rubric Evaluation */}
             <div className="space-y-6 sm:space-y-8">
               <div className="flex items-center justify-between">
                 <span className="font-code text-[10px] sm:text-[11px] text-[#eedcff] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold">
-                  AI INSIGHTS // 03
+                  SMART RUBRICS // 03
                 </span>
                 <span className="material-symbols-outlined text-white/20 text-xl sm:text-2xl">
-                  psychology
+                  fact_check
                 </span>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <h3 className="text-white/40 font-code text-[9px] sm:text-[10px] tracking-widest uppercase">
-                  Evaluation Confidence
+                  AI-Powered Evaluation
                 </h3>
-                <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  <span className="text-white text-4xl sm:text-6xl font-bold tracking-tighter">
-                    94%
-                  </span>
-                  <span className="text-[#00ec3b] text-xs font-bold tracking-widest uppercase">
-                    AI Verified
-                  </span>
-                </div>
+                <p className="text-white text-base sm:text-lg font-medium leading-relaxed">
+                  Every submission is scored against customizable rubrics — measuring problem-solving, code quality, and efficiency automatically.
+                </p>
+                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">
+                  Eliminate bias with consistent, data-driven assessments that give every candidate a fair and transparent evaluation.
+                </p>
               </div>
 
               {/* Console Box Visual */}
               <div className="font-code text-[10px] sm:text-[11px] text-white/40 space-y-2 bg-black/60 p-4 sm:p-5 rounded-2xl border border-white/5 overflow-x-auto">
                 <div className="flex gap-2 sm:gap-3 items-center whitespace-nowrap">
                   <span className="text-[#6c4f91] font-bold">&gt;</span>
-                  <span className="text-white/70">ANALYZING_INTERVIEW_DATA... [DONE]</span>
+                  <span className="text-white/70">ANALYZING_PROBLEM_SOLVING... [DONE]</span>
                 </div>
                 <div className="flex gap-2 sm:gap-3 items-center whitespace-nowrap">
                   <span className="text-[#6c4f91] font-bold">&gt;</span>
-                  <span className="text-white/70">CODE_QUALITY_ASSESSMENT... [DONE]</span>
+                  <span className="text-white/70">EVALUATING_CODE_QUALITY... [DONE]</span>
                 </div>
                 <div className="flex gap-2 sm:gap-3 items-center whitespace-nowrap">
                   <span className="text-[#6c4f91] font-bold">&gt;</span>
-                  <span className="text-white/70">GENERATING_INSIGHTS... [DONE]</span>
+                  <span className="text-white/70">GENERATING_RUBRIC_REPORT... [DONE]</span>
                 </div>
               </div>
 
               {/* Badge Bottom */}
               <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#eedcff] text-sm shrink-0">
-                  psychology
+                  insights
                 </span>
                 <span className="text-[9px] font-code text-white/60 uppercase tracking-wider">
-                  AI Reports Generated: Instant Analysis ✓
+                  Bias-Free Rubric Reports · Instant Insights ✓
                 </span>
               </div>
             </div>

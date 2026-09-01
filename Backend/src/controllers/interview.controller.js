@@ -1,14 +1,18 @@
 import { Interview } from "../models/interview.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { InterviewEnvironment } from "../models/environment.model.js"
+import { InterviewEnvironment } from "../models/environment.model.js";
 import { ApiError } from "../utils/apiError.js";
-import { ApiResponse } from "../utils/apiResponse.js"
+import { ApiResponse } from "../utils/apiResponse.js";
 import { removeRoom, rooms } from "../websocket/rooms/room.manager.js";
-import fs from "fs/promises"
+import fs from "fs/promises";
 import { readDirectory } from "../utils/readDirectory.js";
 import mongoose from "mongoose";
 import path from "path";
 import { broadcastToRoom } from "../websocket/utils/broadcaster.js";
+import { interviewEvaluation } from "../models/interviewEvaluation.model.js";
+import { Application } from "../models/application.model.js";
+import docker from "../config/docker.js";
+
 export const joinInterview = asyncHandler(async (req, res) => {
 
     const interview = await Interview.findById(req.params.id);
@@ -468,4 +472,250 @@ export const getInterviewEnvironment = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json(new ApiResponse(200, "Interview Environment fetched successfully", env));
+});
+
+export const submitInterviewEvaluation = asyncHandler(async (req, res) => {
+    // 1. Extract interviewId from params or body
+    const interviewId = req.params.id || req.params.interviewId || req.body.interviewId;
+
+    if (!interviewId) {
+        throw new ApiError(400, "Interview ID is required.");
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(interviewId)) {
+        throw new ApiError(400, "Invalid Interview ID format.");
+    }
+
+    // 2. Fetch Interview and check existence & status
+    const interview = await Interview.findById(interviewId);
+    if (!interview) {
+        throw new ApiError(404, "Interview not found.");
+    }
+
+    // Check if interview is in progress
+    if (interview.status !== "IN_PROGRESS") {
+        throw new ApiError(
+            400,
+            `Interview cannot be evaluated as it is not in progress. Current status: ${interview.status}`
+        );
+    }
+
+    // Authorization check
+    if (req.user) {
+        const isInterviewer = interview.interviewerId?.toString() === req.user._id?.toString();
+        const isOrg = interview.organizationId?.toString() === req.user._id?.toString();
+        if (!isInterviewer && !isOrg && req.user.role !== "INTERVIEWER" && req.user.role !== "ORGANIZATION") {
+            throw new ApiError(403, "Unauthorized: Only assigned interviewer or organization can submit evaluation.");
+        }
+    }
+
+    // 3. Check if an evaluation already exists for this interview
+    const existingEvaluation = await interviewEvaluation.findOne({ interviewId: interview._id });
+    if (existingEvaluation) {
+        throw new ApiError(400, "An evaluation has already been submitted for this interview.");
+    }
+
+    // 4. Extract and validate incoming schema fields
+    const {
+        overallRating,
+        recommendation,
+        interviewerConfidence,
+        technical,
+        behavioral,
+        feedback,
+        finalDecision,
+        finalReason,
+        additionalComments,
+    } = req.body || {};
+
+    const VALID_RECOMMENDATIONS = [
+        "STRONG_HIRE",
+        "HIRE",
+        "HOLD",
+        "NO_HIRE",
+        "STRONG_NO_HIRE",
+    ];
+
+    const VALID_DECISIONS = ["SELECTED", "REJECTED", "FURTHER_ROUND"];
+
+    if (
+        overallRating === undefined ||
+        typeof overallRating !== "number" ||
+        overallRating < 1 ||
+        overallRating > 5
+    ) {
+        throw new ApiError(400, "overallRating is required and must be a number between 1 and 5.");
+    }
+
+    if (!recommendation || !VALID_RECOMMENDATIONS.includes(recommendation)) {
+        throw new ApiError(
+            400,
+            `recommendation is required and must be one of: ${VALID_RECOMMENDATIONS.join(", ")}`
+        );
+    }
+
+    if (!finalDecision || !VALID_DECISIONS.includes(finalDecision)) {
+        throw new ApiError(
+            400,
+            `finalDecision is required and must be one of: ${VALID_DECISIONS.join(", ")}`
+        );
+    }
+
+    if (!finalReason || typeof finalReason !== "string" || !finalReason.trim()) {
+        throw new ApiError(400, "finalReason is required and must be a non-empty string.");
+    }
+
+    if (
+        interviewerConfidence !== undefined &&
+        (typeof interviewerConfidence !== "number" ||
+            interviewerConfidence < 1 ||
+            interviewerConfidence > 5)
+    ) {
+        throw new ApiError(400, "interviewerConfidence must be a number between 1 and 5.");
+    }
+
+    if (technical && typeof technical === "object") {
+        for (const [key, val] of Object.entries(technical)) {
+            if (val !== undefined && val !== null && (typeof val !== "number" || val < 1 || val > 5)) {
+                throw new ApiError(400, `technical.${key} must be a number between 1 and 5.`);
+            }
+        }
+    }
+
+    if (behavioral && typeof behavioral === "object") {
+        for (const [key, val] of Object.entries(behavioral)) {
+            if (val !== undefined && val !== null && (typeof val !== "number" || val < 1 || val > 5)) {
+                throw new ApiError(400, `behavioral.${key} must be a number between 1 and 5.`);
+            }
+        }
+    }
+
+    // 5. Environment Cleanup (Docker, Workspace, WebSocket Room) - Gracefully & Forcefully
+    const interviewEnv = await InterviewEnvironment.findOne({ interviewId: interview._id });
+
+    if (interviewEnv) {
+        // A. Docker Container Stop & Remove
+        if (interviewEnv.containerId) {
+            try {
+                const container = docker.getContainer(interviewEnv.containerId);
+                let isStopped = false;
+                try {
+                    // Try graceful stop (5 second timeout)
+                    await container.stop({ t: 5 });
+                    isStopped = true;
+                } catch (gracefulStopErr) {
+                    console.warn(
+                        `Graceful stop failed for container ${interviewEnv.containerId} (${gracefulStopErr.message}). Attempting force kill...`
+                    );
+                }
+
+                if (!isStopped) {
+                    try {
+                        await container.kill();
+                    } catch (killErr) {
+                        console.warn(
+                            `Force kill failed for container ${interviewEnv.containerId} (${killErr.message}).`
+                        );
+                    }
+                }
+
+                try {
+                    await container.remove({ force: true });
+                } catch (removeErr) {
+                    console.warn(`Container force remove failed (${removeErr.message}).`);
+                }
+            } catch (dockerErr) {
+                console.error(
+                    `Docker cleanup error for container ${interviewEnv.containerId}:`,
+                    dockerErr.message
+                );
+            }
+        }
+
+        // B. Workspace Directory Removal
+        if (interviewEnv.workspacePath) {
+            try {
+                await fs.rm(interviewEnv.workspacePath, { recursive: true, force: true });
+            } catch (wsErr) {
+                console.error(`Workspace cleanup error for path ${interviewEnv.workspacePath}:`, wsErr.message);
+            }
+        }
+
+        // C. WebSocket Room Cleanup
+        const roomId = interviewEnv.roomId || interview._id.toString();
+        try {
+            try {
+                broadcastToRoom(roomId, {
+                    namespace: "INTERVIEW",
+                    event: "INTERVIEW_ENDED",
+                    payload: { interviewId: interview._id, status: "COMPLETED" },
+                });
+            } catch (broadcastErr) {
+                console.warn("Failed to broadcast interview end to room:", broadcastErr.message);
+            }
+
+            const isRemoved = removeRoom(roomId);
+            if (!isRemoved) {
+                // Force removal from rooms Map
+                rooms.delete(roomId);
+                rooms.delete(interview._id.toString());
+            }
+        } catch (wsRoomErr) {
+            console.error("WebSocket room cleanup failed gracefully, forcing deletion:", wsRoomErr.message);
+            rooms.delete(roomId);
+            rooms.delete(interview._id.toString());
+        }
+
+        // Update InterviewEnvironment DB record
+        interviewEnv.status = "DESTROYED";
+        interviewEnv.destroyedAt = new Date();
+        await interviewEnv.save();
+    }
+
+    // 6. Create interviewEvaluation Document
+    const evaluation = await interviewEvaluation.create({
+        interviewId: interview._id,
+        candidateId: interview.candidateId,
+        interviewerId: req.user?._id || interview.interviewerId,
+        overallRating,
+        recommendation,
+        interviewerConfidence,
+        technical,
+        behavioral,
+        feedback,
+        finalDecision,
+        finalReason,
+        additionalComments,
+        submittedAt: new Date(),
+    });
+
+    // 7. Update Interview Status to COMPLETED
+    interview.status = "COMPLETED";
+    await interview.save();
+
+    // 8. Update Job Application Status accordingly
+    if (interview.applicationId) {
+        const application = await Application.findById(interview.applicationId);
+        if (application) {
+            if (finalDecision === "SELECTED") {
+                application.applicationStatus = "HIRED";
+            } else if (finalDecision === "REJECTED") {
+                application.applicationStatus = "REJECTED";
+            } else if (finalDecision === "FURTHER_ROUND") {
+                application.applicationStatus = "SHORTLISTED";
+            }
+            await application.save();
+        }
+    }
+
+    // 9. Send success response using ApiResponse
+    return res
+        .status(201)
+        .json(
+            new ApiResponse(
+                201,
+                "Interview evaluation submitted, environment cleaned up, and status updated successfully.",
+                evaluation
+            )
+        );
 });

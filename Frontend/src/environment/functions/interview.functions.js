@@ -33,3 +33,12 @@ export const fetchRoomDetails = async (interviewId, roomId) => {
         throw error
     }
 }
+
+export const submitInterviewEvaluation = async ({ interviewId, data }) => {
+    try {
+        const res = await api.post(`/interview/${interviewId}/evaluate`, data);
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};

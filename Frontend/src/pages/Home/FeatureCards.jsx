@@ -15,8 +15,8 @@ export default function FeatureCards() {
     },
     {
       icon: <FaBrain />, 
-      title: 'AI-Powered Technical Insights',
-      description: 'Analyze coding decisions, problem-solving approach, and technical communication to generate meaningful evaluation insights and smarter hiring decisions.'
+      title: 'Structured Rubric Evaluation',
+      description: 'Evaluate candidates using multi-dimensional rubrics covering problem-solving, algorithms, code quality, system design, and communication for objective hiring decisions.'
     }
   ];
 

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Video, VideoOff, Mic, MicOff } from 'lucide-react';
-import ChatInterface from './ChatInterface';
 import useVideoFeedSidebar from '../hooks/useVideoFeedSidebar';
 import { useRoomStore } from '../../store/room.store';
 import { useUserStore } from '../../store/userStore';
@@ -186,9 +185,6 @@ const VideoFeedSidebar = () => {
           )}
         </div>
       </div>
-
-      {/* Chat panel */}
-      <ChatInterface />
     </div>
   );
 };

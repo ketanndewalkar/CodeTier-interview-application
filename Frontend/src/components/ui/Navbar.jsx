@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import UserProfile from './UserProfile';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,39 +94,16 @@ export default function Navbar() {
           <NavLink to="/about" className={navLinkClass}>
             ABOUT
           </NavLink>
-
-          <NavLink to="/contact" className={navLinkClass}>
-            CONTACT US
-          </NavLink>
         </nav>
 
-        {/* Right Section: Action Buttons */}
+        {/* Right Section: Action Buttons / User Profile */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Desktop Action Buttons */}
-          <div className="hidden sm:flex items-center gap-2">
-            <button
-              onClick={() => navigate('/login')}
-              className="text-[10px] font-bold text-white hover:text-[#eedcff] px-3 sm:px-4 py-2 border border-white/20 rounded-md transition-colors uppercase tracking-wider cursor-pointer"
-            >
-              LOG IN
-            </button>
-            <button
-              onClick={() => navigate('/signup')}
-              className="text-[10px] font-bold text-white bg-[#6c4f91] hover:bg-[#6c4f91]/90 px-3 sm:px-4 py-2 rounded-md transition-all uppercase tracking-wider shadow-lg shadow-[#6c4f91]/20 cursor-pointer"
-            >
-              GET STARTED
-            </button>
+          {/* Desktop User Profile / Auth Buttons */}
+          <div className="hidden sm:flex items-center">
+            <UserProfile />
           </div>
 
-          {/* Mobile Get Started CTA Button */}
-          <button
-            onClick={() => navigate('/signup')}
-            className="sm:hidden text-[9px] font-bold text-white bg-[#6c4f91] px-2.5 py-1.5 rounded-md transition-all uppercase tracking-wider cursor-pointer"
-          >
-            GET STARTED
-          </button>
-
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden text-white hover:text-[#eedcff] p-1.5 rounded-lg hover:bg-white/5 cursor-pointer"
@@ -153,29 +131,12 @@ export default function Navbar() {
           >
             WORKFLOW
           </a>
-          <NavLink to="/organization" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
-            ORGANIZATION
-          </NavLink>
           <NavLink to="/about" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
             ABOUT
           </NavLink>
-          <NavLink to="/contact" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass}>
-            CONTACT US
-          </NavLink>
 
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2 sm:hidden">
-            <button
-              onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
-              className="w-full text-center text-xs font-bold text-white py-2.5 border border-white/20 rounded-xl uppercase tracking-wider cursor-pointer"
-            >
-              LOG IN
-            </button>
-            <button
-              onClick={() => { setMobileMenuOpen(false); navigate('/signup'); }}
-              className="w-full text-center text-xs font-bold text-white bg-[#6c4f91] py-2.5 rounded-xl uppercase tracking-wider shadow-lg shadow-[#6c4f91]/20 cursor-pointer"
-            >
-              GET STARTED
-            </button>
+            <UserProfile isMobile />
           </div>
         </div>
       )}

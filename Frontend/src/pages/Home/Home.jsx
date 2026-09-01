@@ -5,9 +5,6 @@ import FeatureCards from './FeatureCards';
 import WorkflowSection from './WorkflowSection';
 import AnalyticsSection from './AnalyticsSection';
 import CTASection from './CTASection';
-import Navbar from '../../components/ui/Navbar';
-import Footer from '../../components/ui/Footer';
-
 
 export default function Home() {
   const location = useLocation();
@@ -25,16 +22,12 @@ export default function Home() {
   }, [location]);
 
   return (
-    <div className="bg-black text-white min-h-screen selection:bg-[#6c4f91] selection:text-white overflow-x-hidden">
-      <Navbar />
-      <main>
-        <Hero />
-        <AnalyticsSection />
-        <WorkflowSection />
-        <FeatureCards />
-        <CTASection />
-      </main>
-      <Footer />
+    <div>
+      <Hero />
+      <AnalyticsSection />
+      <WorkflowSection />
+      <FeatureCards />
+      <CTASection />
     </div>
   );
 }

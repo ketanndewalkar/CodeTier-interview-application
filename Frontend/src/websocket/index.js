@@ -11,7 +11,6 @@ export const socketHandler = (data) => {
         case SOCKET_NAMESPACE.INTERVIEW: {
             interviewSocketHandler(data);
             const room = data.payload?.room || data.payload;
-            console.log(room)
             if (room) {
                 setRoom(room);
                 if (room.status) {

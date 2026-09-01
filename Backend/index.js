@@ -33,11 +33,12 @@ app.use(
   }),
 );
 
-app.get("/", async () => {
+app.get("/spin-off-docker/:id", async (req, res) => {
+  const { id } = req.params;
   await interviewQueue.add(
     "prepare-interview",
     {
-      interviewId: "6a8893c4a4e06fe2e179681d",
+      interviewId: id,
     },
     {
       delay: 0,

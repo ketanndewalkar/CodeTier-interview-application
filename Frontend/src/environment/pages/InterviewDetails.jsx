@@ -135,7 +135,6 @@ const InterviewDetails = () => {
   }
 
   if (error) {
-    console.log(error.response);
     return (
       <div className="min-h-screen w-full bg-[#07070b] text-neutral-200 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-zinc-950/80 border border-rose-500/20 rounded-2xl p-6 text-center shadow-xl backdrop-blur-xl">

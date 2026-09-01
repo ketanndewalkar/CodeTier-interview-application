@@ -20,7 +20,6 @@ export const useAuthHook = () => {
       }
     },
     onError:(err)=>{
-        console.log(err.response);
         toast.error(err.response.data.message)
         
     }

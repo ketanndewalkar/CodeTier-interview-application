@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import gsap from 'gsap';
+import { useUserStore } from '../../store/userStore';
 
 export default function Hero() {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ export default function Hero() {
   const headlineRef = useRef(null);
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
-
+  const { roleRoute, user } = useUserStore(state => state);
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Timeline for coordinated text entrance animation
@@ -106,9 +107,8 @@ export default function Hero() {
     return text.split('').map((char, index) => (
       <span
         key={index}
-        className={`proximity-char inline-block origin-center select-none ${
-          isItalic ? 'hero-serif text-[#eedcff] italic' : 'text-white'
-        }`}
+        className={`proximity-char inline-block origin-center select-none ${isItalic ? 'hero-serif text-[#eedcff] italic' : 'text-white'
+          }`}
         style={{ fontWeight: 400 }}
       >
         {char === ' ' ? '\u00A0' : char}
@@ -118,7 +118,7 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-12 py-24 sm:py-32 overflow-hidden bg-black">
-      
+
       {/* Background Video */}
       <video
         autoPlay
@@ -134,13 +134,13 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black pointer-events-none z-[1]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[700px] h-[350px] sm:h-[700px] bg-[#6c4f91]/30 rounded-full blur-[100px] sm:blur-[160px] pointer-events-none z-[1]" />
 
-      <div 
+      <div
         ref={containerRef}
         className="max-w-5xl mx-auto space-y-6 sm:space-y-10 relative z-10 w-full flex flex-col items-center justify-center text-center my-auto"
       >
-        
+
         {/* Headline with split interactive characters & GSAP entrance words */}
-        <h1 
+        <h1
           ref={headlineRef}
           className="hero-main-title text-white text-3xl sm:text-6xl lg:text-7xl leading-[1.12] sm:leading-[1.02] tracking-tight font-normal text-center max-w-4xl mx-auto cursor-default"
         >
@@ -165,21 +165,21 @@ export default function Hero() {
         </h1>
 
         {/* Subtitle */}
-        <p 
+        <p
           ref={subtitleRef}
           className="font-body text-white/70 max-w-2xl mx-auto text-sm sm:text-lg leading-relaxed font-light px-2 text-center opacity-0 cursor-default"
         >
-          Conduct AI-assisted technical interviews with live coding, real-time
+          Conduct technical interviews with live coding, real-time
           collaboration, automated evaluation, and intelligent scheduling.
         </p>
 
         {/* Action Buttons */}
-        <div 
+        <div
           ref={ctaRef}
           className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 pt-4 sm:pt-6 w-full max-w-md sm:max-w-none mx-auto opacity-0"
         >
-          <button 
-            onClick={() => navigate('/candidate/interviews')}
+          <button
+            onClick={() => navigate(roleRoute[user.role])}
             className="w-full sm:w-auto bg-white text-black px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-xs sm:text-sm tracking-widest flex items-center justify-center gap-3 hover:scale-[1.03] active:scale-[0.98] transition-all group shadow-xl shadow-white/10 uppercase cursor-pointer"
           >
             <span>START INTERVIEW</span>
@@ -188,7 +188,7 @@ export default function Hero() {
             </div>
           </button>
 
-          <button 
+          <button
             onClick={() => {
               const element = document.getElementById('interview-lifecycle');
               if (element) {

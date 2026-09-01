@@ -30,7 +30,6 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 export default function InterviewDetailView({ interview, onBack }) {
-  console.log(interview.id)
   const navigate = useNavigate()
   const [noteText, setNoteText] = useState('');
   const [copiedField, setCopiedField] = useState(null);

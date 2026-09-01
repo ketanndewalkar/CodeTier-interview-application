@@ -456,10 +456,10 @@ export default function WorkflowSection() {
                   Understand how candidates think
                 </h3>
                 <p className="font-body text-white/60 text-sm sm:text-base leading-relaxed">
-                  Our AI analyzes every aspect of the interview — from coding decisions and problem-solving approach to communication and technical quality — helping organizations make smarter hiring decisions.
+                  Our structured rubric evaluation framework captures every aspect of the candidate's performance — from coding decisions and problem-solving approach to system design and communication — enabling objective hiring decisions.
                 </p>
                 <button className="px-5 sm:px-6 py-2.5 sm:py-3 border border-white/20 text-white font-bold text-xs rounded-xl hover:bg-white/5 transition-colors uppercase tracking-widest">
-                  EXPLORE AI INSIGHTS
+                  EXPLORE EVALUATION RUBRICS
                 </button>
               </div>
 
@@ -469,7 +469,7 @@ export default function WorkflowSection() {
                   <div className="flex items-center gap-2">
                     <FaBrain className="text-[#eedcff] text-sm" />
                     <span className="text-[10px] font-code text-white/90 uppercase tracking-wider">
-                      AI Interview Analysis
+                      Structured Rubric Analysis
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

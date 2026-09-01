@@ -22,16 +22,13 @@ const InterviewLayout = () => {
     });
     
     ws.onopen = () => {
-      console.log('WebSocket connection established');
     };
     
     ws.onclose = () => {
-      console.log('WebSocket connection closed');
     };
     
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data)
         socketHandler(data);
     }
 
